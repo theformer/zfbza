@@ -6,9 +6,10 @@ module.exports = (app) => {
   app.use(
     "/api",
     proxy({
-      // target: "http://192.168.5.248:10000",
-      target: 'http://192.168.5.233:8888',
-      changeOrigin: true,
+      target: "http://192.168.5.248:10000",
+      // target: 'http://192.168.5.233:8888',
+      //   target: 'http://192.168.100.92:7081',
+        changeOrigin: true,
       pathRewrite: {
         "^/api": "/",
       },
@@ -17,8 +18,9 @@ module.exports = (app) => {
   app.use(
     "/test",
     proxy({
-        target: 'http://192.168.5.233:8888',
-        // target: "http://192.168.5.248:10000",
+        // target: 'http://192.168.5.233:8888',
+        target: "http://192.168.5.248:10000",
+        // target: 'http://192.168.100.92:7081',
         changeOrigin: true,
       pathRewrite: {
         "^/test": "/",

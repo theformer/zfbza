@@ -199,6 +199,7 @@ class Index extends Component {
                 tel: this.state.phone,
                 code: this.state.code,
             };
+
             if(!this.state.inputStatus){
                  http
                     .post({

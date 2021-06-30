@@ -68,6 +68,7 @@ class Index extends Component {
 
     componentWillMount() {
         window.poph5 = true
+        setStorage('passWayVal', '')
     }
     componentWillUnmount() {
         window.poph5 = false
@@ -537,11 +538,11 @@ class Index extends Component {
             url:
                 "/test/visitor/findVisitorStatus?complexCode=" +
                 complexCode
-        }).then((res) => {
+        }).then(async (res) => {
             if(res.data.code == 1){
                 let uuidCode = this.uuid()
-                this.saveRegisterId(uuidCode)
-                window.my.postMessage(
+              await  this.saveRegisterId(uuidCode)
+              await  window.my.postMessage(
                     {
                         uuidCode: uuidCode
                     });
