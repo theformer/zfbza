@@ -1,0 +1,114 @@
+$prefix : "add-member";
+
+.#{$prefix} {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &-line {
+    background: #ECEEF2;
+    width: vw(718);
+    height: vw(1);
+  }
+
+  &-form-nation {
+    height: vw(144);
+    margin-top: vw(16);
+    padding: vw(24) vw(32) vw(24) 0;
+  }
+}
+
+.#{$prefix}-main {
+  margin-left: vw(32);
+}
+
+.#{$prefix}-main-head {
+  font-family: PingFangSC-Semibold;
+  font-size: ft(56);
+  color: #2B333F;
+  letter-spacing: 0;
+  margin: vw(24) 0 vw(72) 0;
+}
+
+.#{$prefix}-main-form-name {
+
+  //border-bottom: ;
+}
+
+.login-idCard {
+  .am-list-item-middle {
+    padding-left: 0;
+
+    .am-list-line {
+      .am-list-extra {
+        display: none;
+      }
+    }
+  }
+}
+
+.code-input {
+  // width: vw(268);
+  height: vw(60);
+}
+
+.auth-code {
+  border: none;
+  color: #255BDA;
+  font-size: ft(28);
+  min-width: vw(160);
+}
+
+.auth-code::before {
+  border: none !important;
+}
+
+.#{$prefix}-footer {
+  width: 90%;
+  box-sizing: border-box;
+  margin: vw(30) auto;
+  overflow: hidden;
+  // position: absolute;
+  // left: 0;
+  // right: 0;
+  // bottom: vw(30);
+}
+
+.#{$prefix}-form-footer {
+  width: vw(688);
+  height: vw(88);
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+
+.retry {
+  color: #AEB8C6;
+}
+
+.#{$prefix}-footer-saveBtn {
+  background: #255BDA;
+  border-radius: vw(8);
+  margin-top: vw(142);
+
+}
+
+.#{$prefix}-footer-text {
+  display: flex;
+  justify-content: center;
+  margin-top: vw(12);
+}
+
+.#{$prefix}-footer-privacy {
+  font-family: PingFangSC-Regular;
+  color: #255BDA;
+  letter-spacing: 0;
+}
+
+.#{$prefix}-footer-user {
+  font-family: PingFangSC-Regular;
+  color: #255BDA;
+  letter-spacing: 0;
+}

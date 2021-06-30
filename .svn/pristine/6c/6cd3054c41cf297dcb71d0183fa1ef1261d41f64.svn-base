@@ -1,0 +1,493 @@
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import {
+  setTitle,
+  jump,
+  pxTovw,
+  ftTovw,
+  getHashUrlValue,
+} from "../../utlis/utlis";
+import http from "../../utlis/http";
+import Modal from "../../common/dialog-phone";
+import { Toast, PullToRefresh, ListView, Button } from "antd-mobile";
+import {
+  Activate,
+  Deactivate,
+  Release,
+  Finish,
+} from "common/yy-refresh-indiccator";
+import { EmptyPage } from "../../common/empty-page/index";
+
+import "./index.scss";
+
+const prefix = "my-house";
+Toast.config({
+  mask: false,
+});
+
+class Myhouse extends Component {
+  constructor(props) {
+    super(props);
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2, // rowHasChanged(prevRowData, nextRowData); 用其进行数据变更的比较
+    });
+    this.state = {
+      dataSource,
+      datas: [],
+      pageCount: 1,
+      pageSize: 10,
+      hasMore: true,
+      refreshing: true,
+      isLoading: true,
+      houseList: [],
+      hasNextPage: true,
+      count: 60,
+      code: "",
+      checked: true,
+      modalVisible: false,
+      liked: true,
+      mobile: "",
+      showBtn: true,
+    };
+  }
+  componentWillMount() {
+    // setTitle.call(this, '我的房屋')
+  }
+  componentDidMount() {
+    setTitle.call(this, "我的房屋");
+
+    let showBtn = getHashUrlValue("showBtn");
+    if (showBtn) {
+      this.setState({
+        showBtn: false,
+      });
+    }
+
+    this.gethouseList(true);
+    let userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      userInfo = JSON.parse(userInfo);
+      this.setState({
+        mobile: userInfo.mobile,
+      });
+    }
+  }
+  gethouseList(ref = false) {
+    let data = {
+      userId: localStorage.getItem('zjuserid'),
+      // userId: "613569671e334413a7b523ad789341e2",
+      // pageCount: this.state.pageCount,
+      // pageSize: this.state.pageSize
+    };
+    http
+      .get({
+        api: "mgop.yykj.community.myHouseList",
+        data,
+      })
+      .then((res) => {
+        // console.log(res, '获取房屋返回的参数')
+        const { code, message, data } = res.data;
+        const dataList = data;
+        const len = dataList.length;
+
+        if (len <= 0 || code !== "1") {
+          // 判断是否已经没有数据了
+          this.setState({
+            refreshing: false,
+            isLoading: false,
+            hasMore: false,
+          });
+
+          Toast.info("没有数据了~", 1);
+          return false;
+        }
+
+        if (ref) {
+          //这里表示刷新使用
+          // 下拉刷新的情况，重新添加数据即可(这里等于只直接用了第一页的数据)
+          this.setState({
+            pageCount: this.state.pageCount,
+            hasMore: true, // 下拉刷新后，重新允许开下拉加载
+            refreshing: false, // 是否在刷新数据
+            isLoading: false, // 是否在加载中
+            houseList: dataList, // 保存数据进state，在下拉加载时需要使用已有数据
+          });
+        } else {
+          // 这里表示上拉加载更多
+          // 合并state中已有的数据和新增的数据
+          var houseList = this.state.houseList.concat(dataList); //关键代码
+          this.setState({
+            pageCount: this.state.pageCount,
+            refreshing: false,
+            isLoading: false,
+            houseList: houseList, // 保存新数据进state
+          });
+        }
+
+        this.setLoaded();
+
+        console.log(this.state.houseList, "houseList");
+      })
+      .catch((err) => {
+        Toast.fail(err.ret[0]);
+        // Toast.fail(err ? err : '获取房屋失败')
+      });
+  }
+  // 下拉刷新
+  onRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+        isLoading: true,
+        pageCount: 1, // 刷新嘛，一般加载第一页，或者按你自己的逻辑（比如每次刷新，换一个随机页码）
+      },
+      () => {
+        this.gethouseList(true);
+      }
+    );
+  };
+
+  // 滑动到底部时加载更多
+  onEndReached = (event) => {
+    // 加载中或没有数据了都不再加载
+    if (this.state.isLoading || !this.state.hasMore) {
+      return;
+    }
+    this.setState(
+      {
+        isLoading: true,
+        pageCount: this.state.pageCount + 1, // 加载下一页
+      },
+      () => {
+        this.gethouseList(false);
+      }
+    );
+  };
+
+  toHouseDetail(row) {
+    console.log(row, "跳转到房屋详情");
+    jump.call(this, "/housedetail?id=" + row.id + "&houseId=" + row.houseId);
+  }
+
+  setLoaded() {
+    this.setState({
+      request: true,
+      isLoading: false,
+      refreshing: false,
+    });
+  }
+  onClickAdd() {
+    console.log(77777)
+    this.setState({
+      modalVisible: true
+    })
+
+    // 这里跳过验证码，直接去选择楼栋
+    // this.toChooseBuilding();
+  }
+
+  //获取短信验证码的值
+  onChangeCode(e) {
+    e.persist();
+    this.setState({
+      code: e.target.value,
+    });
+  }
+  //点击倒计时
+  handleClick() {
+    console.log("开始倒计时");
+    let userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      userInfo = JSON.parse(userInfo);
+    }
+    let data = {
+      zlbUserId: userInfo.userid,
+    };
+    http
+      .post({
+        api: "mgop.yykj.community.messageSend",
+        data,
+      })
+      .then((res) => {
+        console.log(res, "获取验证码");
+        const { code, message } = res.data;
+        if (code !== "1") {
+          Toast.fail(message ? message : "验证码获取失败");
+          return;
+        }
+        Toast.success("验证码发送成功");
+      })
+      .catch((err) => {
+        Toast.fail("服务器连接失败");
+      });
+    const { liked } = this.state;
+    if (!liked) {
+      return;
+    }
+    this.countDown();
+  }
+  countDown() {
+    const { count } = this.state;
+    if (count === 1) {
+      this.setState({
+        count: 60,
+        liked: true,
+      });
+    } else {
+      this.setState({
+        count: count - 1,
+        liked: false,
+      });
+      setTimeout(this.countDown.bind(this), 1000);
+    }
+  }
+  async chenckCode() {
+    let userInfo = localStorage.getItem("userInfo");
+    if (userInfo) {
+      userInfo = JSON.parse(userInfo);
+    }
+    let data = {
+      zlbUserId: userInfo.userid,
+      code: this.state.code,
+    };
+    await http
+      .post({
+        api: "mgop.yykj.community.messageValid",
+        data,
+      })
+      .then((res) => {
+        console.log(res, "校验验证码返回数据");
+        const { code, message } = res.data;
+        if (code !== "1") {
+          Toast.fail(message ? message : "验证码校验失败");
+          return;
+        }
+        // 去选择楼栋
+        this.toChooseBuilding();
+      })
+      .catch((err) => {
+        Toast.fail("服务器连接失败");
+      });
+  }
+
+  toChooseBuilding() {
+    jump.call(this, "/choose-building");
+  }
+
+  render() {
+    const {
+      dataSource,
+      houseList,
+      isLoading,
+      refreshing,
+      hasNextPage,
+      mobile,
+      showBtn,
+    } = this.state;
+    const row = (rowData) => {
+      return (
+        <React.Fragment>
+          {houseList && houseList.length > 0 ? (
+            <div
+              className={`${prefix}-item bg-fff`}
+              onClick={this.toHouseDetail.bind(this, rowData)}
+            >
+              <div className={`${prefix}-complex flex align-center`}>
+                <img
+                  src={require("assets/imgs/house/community@xhdpi.png")}
+                  className={`${prefix}-complex-icon`}
+                />
+                <div className={`${prefix}-complex-name flex1`}>
+                  {rowData.complexName}
+                </div>
+              </div>
+              <div className={`${prefix} flex1 flex align-center`}>
+                <div className={`${prefix}-house`}>
+                  <div className={`${prefix}-house-name`}>
+                    {rowData.buildingName}
+                    {rowData.unitName}
+                    {rowData.houseCode}
+                  </div>
+                  <div className={`${prefix}-house-detail`}>
+                    <span>
+                      户主：
+                      {rowData.householderName1
+                        ? rowData.householderName1
+                        : "户主未登记"}
+                      /
+                      {rowData.householderTel1
+                        ? rowData.householderTel1
+                        : "户主未登记"}
+                    </span>
+                  </div>
+                </div>
+                <img
+                  className={`${prefix}-item-arrow`}
+                  src={require("assets/imgs/house/next@xhdpi.png")}
+                />
+              </div>
+            </div>
+          ) : null}
+          {!houseList || houseList.length <= 0 ? (
+            <div
+              className={`flex flex-center align-center flex-column color-999`}
+              style={{
+                fontSize: ftTovw(28),
+                height: "100%",
+                paddingBottom: pxTovw(100),
+                paddingTop: pxTovw(100),
+              }}
+            >
+              <img
+                src={require("assets/imgs/common/blank.png")}
+                style={{ width: "50", height: pxTovw(170) }}
+                alt="暂无数据"
+              />
+              <div className="size28">暂无数据</div>
+            </div>
+          ) : null}
+        </React.Fragment>
+      );
+    };
+    return (
+      <div className={`${prefix}-box flex flex-column hiden-box`}>
+        <div className={`flex1 hiden-box`}>
+          {(() => {
+            if (houseList.length < 1) {
+              return (
+                <EmptyPage
+                  content={"快来添加您的房屋吧~"}
+                  imgUrl={require("../../assets/imgs/car-empty.png")}
+                ></EmptyPage>
+              );
+            } else {
+              return (
+                <ListView
+                  ref={(el) => (this.lv = el)}
+                  dataSource={dataSource.cloneWithRows(houseList)}
+                  renderFooter={() => (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        paddingBottom: pxTovw(100),
+                      }}
+                    >
+                      {isLoading
+                        ? "加载中..."
+                        : houseList && houseList.length > 0 && !hasNextPage
+                        ? "没有更多了~"
+                        : ""}
+                    </div>
+                  )}
+                  renderRow={row}
+                  className="am-list"
+                  pageSize={this.state.pageSize}
+                  scrollRenderAheadDistance={500}
+                  // onEndReached={this.onEndReached}
+                  // onEndReachedThreshold={10}
+                  style={{
+                    height: "100%",
+                  }}
+                  pullToRefresh={
+                    <PullToRefresh
+                      damping={pxTovw(120)}
+                      ref={(el) => (this.ptr = el)}
+                      refreshing={refreshing}
+                      onRefresh={this.onRefresh}
+                      distanceToRefresh={parseFloat(
+                        document.documentElement.style.fontSize
+                      )}
+                      indicator={{
+                        activate: <Activate />,
+                        deactivate: <Deactivate />,
+                        release: <Release />,
+                        finish: <Finish />,
+                      }}
+                    ></PullToRefresh>
+                  }
+                />
+              );
+            }
+          })()}
+        </div>
+
+        {/* {
+          (() => {
+            if (showBtn) {
+              return (
+                <div className={`${prefix}-footer`}>
+                </div>
+              )
+            }
+          })()
+        } */}
+        {(() => {
+          if (showBtn) {
+            return (
+              <div className={`${prefix}-footer-button`}>
+                <Button
+                  type="primary"
+                  className={`${prefix}-button`}
+                  onClick={this.onClickAdd.bind(this)}
+                >
+                  <img
+                    src={require("./../../assets/imgs/house/house_add@2x.png")}
+                    className={`${prefix}-list-img`}
+                  />
+                  新增房屋
+                </Button>
+              </div>
+            );
+          }
+        })()}
+
+        <Modal
+          visible={this.state.modalVisible}
+          onCancel={() => {
+            this.setState({ modalVisible: false });
+          }}
+          onConfirm={this.chenckCode.bind(this)}
+          className={`${prefix}-modal`}
+        >
+          <div>
+            <div className={"verification-code"}>
+              需验证已绑定手机号 <span>{mobile}</span>,请获取验证码
+            </div>
+            {/* <div className={'housing-line'}></div> */}
+            <div
+              className={`${prefix}-form-code flex flex-between align-center`}
+            >
+              <input
+                type="text"
+                value={this.state.code}
+                onChange={this.onChangeCode.bind(this)}
+                placeholder="请填写短信验证码"
+                className={`${prefix}-form-name-ipt ipt-none code-input`}
+              />
+              {(() => {
+                if (this.state.liked) {
+                  return (
+                    <Button
+                      className={`${prefix} ipt-none auth-code`}
+                      onClick={this.handleClick.bind(this)}
+                    >
+                      获取验证码
+                    </Button>
+                  );
+                }
+                return (
+                  <Button
+                    className={`${prefix}-form-name-ipt ipt-none auth-code retry`}
+                    onChange={this.handleClick.bind(this)}
+                  >{`${this.state.count} 秒后重发`}</Button>
+                );
+              })()}
+            </div>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
+}
+
+export default inject("store")(observer(Myhouse));

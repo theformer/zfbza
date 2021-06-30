@@ -1,0 +1,358 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, {Component} from 'react'
+import {inject, observer} from 'mobx-react'
+import {Toast, DatePicker, Picker, List} from 'antd-mobile'
+import './index.scss'
+
+import {back, getStorage, getUrlParam, getUrlValue, formatDate, jump, setStorage, setTitle} from '../../utlis/utlis'
+
+import http from '../../utlis/http'
+
+const prefix = 'visitor-info'
+Toast.config({
+    mask: false
+})
+
+class VisitorInfo extends Component {
+    constructor(props) {
+        super(props)
+    }
+
+    state = {
+        visitorName: '',  // 被访人
+        visitorBeginTime: '',
+        visitorEndTime: '',
+        withCount: '',
+        carNumber: '',
+        carList: [
+            {
+                label: '浙A33321',
+                value: '浙A33241'
+            }
+        ],
+        registerSource: 0
+    }
+
+    async componentDidMount() {
+        // 修改mobx中存储的值
+        setTitle.call(this, ' ')
+        //接收从引导页传来的complexCode和zfbUserId
+        console.log(window.location.href,'我是当前页面的地址')
+        let goVisitorInfo = getUrlValue('goVisitorInfo')
+        if (goVisitorInfo) {
+            await setStorage('goVisitorInfo', goVisitorInfo)
+        }
+        window.my.postMessage({'sendToMiniProgram': '0'});
+        window.my.onMessage = async function(e) {
+          await setStorage('complexCode',e.complexCode)
+          await setStorage('zfbUserId',e.zfbUserId)
+          await setStorage('goVisitorInfo', e.complexCode)
+            console.log(e,'我是e')
+          if(e.houseId){
+              await setStorage('visitorName',e.visitorName)
+              await setStorage('complexCode',e.complexCode)
+              await setStorage('complexName', e.complexName)
+              await setStorage('uuidCode',e.uuidCode)
+              await setStorage('houseId',e.houseId)
+              await setStorage('buildingCode', e.buildingCode)
+              await setStorage('unitCode',e.unitCode)
+              await setStorage('goVisitorInfo',e.goVisitorInfo)
+              await setStorage('parentId', e.parentId)
+          }
+        }
+        window.my.getEnv(function(res) {
+            console.log(res.miniprogram) // true
+        });
+        this.getComplexInfo()
+
+    }
+
+    //获取小区信息
+    async getComplexInfo() {
+        let complexCode
+        await getStorage('complexCode', res => {
+            complexCode = res
+        })
+        console.log('我是获取小区的code',complexCode)
+        http.get({
+            url: '/test/complexInfo/complexCode?complexCode=' + complexCode,
+        }).then(res => {
+            if (res.data.code == 1) {
+               let  complexName= res.data.data.complexName
+                this.setState({
+                    complexName
+                })
+                this.getUserInfo()
+            }
+            // this.getCarList()
+        })
+    }
+
+    //获取用户信息
+    async getUserInfo() {
+        let zfbUserId
+        await getStorage('zfbUserId', res => {
+            zfbUserId = res
+        })
+        http.get({
+            url: '/test/user/info/get?openId=' + zfbUserId,
+        }).then(res => {
+            this.setState({
+                userId :res.data.data.id
+            },()=>{
+                this.getCarList()
+            })
+        })
+    }
+
+    //获取车辆
+    getCarList() {
+        http.get({
+            url: '/test/info/car/list?userId=' + this.state.userId,
+        }).then(res => {
+            if (res.data.code == 0) {
+                this.setState({
+                    carList: res.data.data
+                })
+            }
+        })
+    }
+
+    //下一步
+    async saveBtn() {
+        let complexCode, zfbUserId, goVisitorInfo,unitCode,buildingCode,housesId,complexName,uuidCode
+        await getStorage('complexCode', res => {
+            complexCode = res
+        })
+        await getStorage('zfbUserId', res => {
+            zfbUserId = res
+        })
+        await getStorage('goVisitorInfo', res => {
+            goVisitorInfo = res
+        })
+        await getStorage('unitCode', res => {
+            unitCode = res
+        })
+        await getStorage('buildingCode', res => {
+            buildingCode = res
+        })
+        await getStorage('housesId', res => {
+            housesId = res
+        })
+        await getStorage('complexName', res => {
+            complexName = res
+        })
+        await getStorage('uuidCode', res => {
+            uuidCode = res
+        })
+        let registerSource
+        if(goVisitorInfo==2){
+            registerSource = 1
+        }else if(goVisitorInfo==3){
+            registerSource = 2
+        }else{
+            registerSource = 0
+        }
+        let data = {
+            complexCode: complexCode,
+            complexName: this.state.complexName?this.state.complexName:complexName,
+            userId:this.state.userId||'',
+            buildingCode:buildingCode||'',
+            housesId:housesId||'',
+            unitCode:unitCode||'',
+            visitorName:this.state.visitorName,
+            visitorBeginTime: formatDate(this.state.visitorBeginTime, 'YYYY-MM-DD hh:mm'),
+            visitorEndTime: formatDate(this.state.visitorEndTime, 'YYYY-MM-DD hh:mm'),
+            withCount: this.state.withCount,
+            carNumber: this.state.carNumber||'',
+            registerSource: registerSource,
+            parentId: this.state.parentId ? this.state.parentId : '',  //上次拜访id
+            registerId: uuidCode ? uuidCode : '', //标记邀请链接
+        }
+        console.log('我是传过去的data', data)
+        http.post({
+            url: '/test/visitor/save',
+            data
+        }).then(res => {
+            if (res.data.code == 1) {
+                jump.call(this, '/home-page')
+            } else {
+                console.log(res,'我是返回的res')
+                Toast.info(res.data.message)
+            }
+        }).catch(err=>{
+            console.log('我是nap的磁盘',err)
+        })
+    }
+
+    toIndex() {
+        // 跳转
+        jump.call(this, '/index')
+
+        // // 获取用户信息
+        // getUserInfo() {
+        //   getUserInfo({ openId: '2088022962017922' }).then(res => {
+        //     console.log(res, 1111);
+        //     if(res.code==1) {
+        //       this.setState({
+        //         userInfo: res.data
+        //       })
+        //     }
+        //   })
+        // }
+    }
+
+    checkStartDate(date) {
+        this.setState({
+            visitorBeginTime: date
+        })
+        if (this.state.visitorEndTime !== '') {
+            this.setState({
+                visitorEndTime: ''
+            })
+        }
+    }
+
+    checkEndDate(date) {
+        let startDateTemp = this.state.visitorBeginTime
+        if (!startDateTemp) {
+            Toast.fail('请选择开始时间')
+            return
+        }
+        let startTime = new Date(startDateTemp).getTime()
+        let endTime = new Date(date).getTime()
+        if (startTime > endTime) {
+            Toast.fail('租住开始时间不得大于结束时间')
+            return
+        }
+        this.setState({visitorEndTime: date})
+    }
+
+    onVisitorName(e) {
+        this.setState({
+            visitorName: e.target.value
+        })
+    }
+
+    onWithCount(e) {
+        this.setState({
+            withCount: e.target.value
+        })
+    }
+
+    onCarNumber(e) {
+        this.setState({
+            carNumber: e.target.value
+        })
+    }
+
+
+    render() {
+        const {value, visitorName, visitorBeginTime, visitorEndTime, withCount, carNumber} = this.state
+        // 从mobx中拿所需属性
+        return (
+            <React.Fragment>
+                <div className={`${prefix} flex flex-column`}>
+                    <div>
+                        <div className={`${prefix}-main`}>
+                            <div className={`${prefix}-main-head`}>
+                                访客信息
+                            </div>
+                            <div className={`${prefix}-head flex align-center`}>
+                                <img src={require('./../../assets/imgs/common/Home_icon_community_d@2x.png')}
+                                     className={`left-png`} alt=""/>
+                                <div className={`right-text`}>{this.state.complexName}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={`${prefix}-box padding-left32`}>
+                                <span className={`box-title flex flex-column`}>被访人</span>
+                                <input
+                                    placeholder='请填写访问的业主、楼栋、单元、房屋'
+                                    value={this.state.visitorName}
+                                    className={`${prefix}-form-name-ipt ipt-none name-card`}
+                                    onChange={this.onVisitorName.bind(this)}/>
+                            </div>
+                            <div className={`${prefix}-container`}>
+                                <div className={`${prefix}-container-title`}>到访时间</div>
+                                <DatePicker
+                                    className="datePicker"
+                                    mode="datetime"
+                                    title="开始时间"
+                                    extra="请选择开始时间"
+                                    value={this.state.visitorBeginTime}
+                                    onChange={time => this.checkStartDate(time)}
+                                    format={'YYYY-MM-DD HH:mm'}
+                                >
+                                    <List.Item arrow="horizontal">开始时间</List.Item>
+                                </DatePicker>
+                                <DatePicker
+                                    mode="datetime"
+                                    title="结束时间"
+                                    extra="请选择结束时间"
+                                    value={this.state.visitorEndTime}
+                                    onChange={time => this.checkEndDate(time)}
+                                    format={'YYYY-MM-DD HH:mm'}
+                                >
+                                    <List.Item arrow="horizontal">结束时间</List.Item>
+                                </DatePicker>
+                            </div>
+                            <div className={`${prefix}-box padding-left32`}>
+                                <span className={`box-title flex flex-column`}>同行同伴</span>
+                                <input
+                                    placeholder='请输入同伴数'
+                                    value={this.state.withCount}
+                                    className={`${prefix}-form-name-ipt ipt-none name-card`}
+                                    onChange={this.onWithCount.bind(this)}/>
+                            </div>
+                            <div className={`${prefix}-box padding-left32`}>
+                                <span className={`box-title flex flex-column`}>车辆(选填)</span>
+                                <div className="flex dlex-column card-item">
+                                    <input
+                                        placeholder='请输入车牌号'
+                                        value={this.state.carNumber}
+                                        className={`${prefix}-form-name-ipt ipt-none name-card`}
+                                        onChange={this.onCarNumber.bind(this)}/>
+                                    <Picker
+                                        data={this.state.carList}
+                                        cols={1}
+                                        onOk={v => {
+                                            this.setState({
+                                                carNumber: v[0]
+                                            })
+                                        }}
+                                    >
+                                        <List.Item arrow="horizontal"></List.Item>
+                                    </Picker>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {
+                        (() => {
+                            if (visitorName && visitorBeginTime && visitorEndTime && withCount) {
+                                return <div className={`${prefix}-footer flex1 flex align-center`}>
+                                    <input type="button" className={'save-btn files-save-btn'}
+                                           onClick={this.saveBtn.bind(this)} value="下一步"/>
+                                </div>
+                            }
+                            return <div className={`${prefix}-footer flex1 flex align-center`}>
+                                <input type="button" className={'save-btn'} onClick={this.saveBtn.bind(this)}
+                                       value="下一步"/>
+                            </div>
+                        })()
+                    }
+                </div>
+
+            </React.Fragment>
+        )
+    }
+}
+
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+    observer(VisitorInfo)
+)

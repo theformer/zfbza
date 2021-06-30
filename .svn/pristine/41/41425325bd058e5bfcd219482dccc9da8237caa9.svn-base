@@ -1,0 +1,156 @@
+$prefix: 'userInformation';
+
+.#{$prefix} {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  &-header{
+    height:vw(88);
+    width: vw(750);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &-header-left{
+    margin-left: vw(22);
+    width: vw(20);
+    height: vw(34);
+  }
+  &-main{
+    margin-left: vw(32);
+    margin-bottom: vw(56);
+
+  }
+  &-main-head{
+    font-family: PingFangSC-Semibold;
+    font-size: ft(56);
+    color: #2B333F;
+    letter-spacing: 0;
+    margin: vw(24) 0 vw(8) 0;
+  }
+  &-main-name{
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #2B333F;
+    letter-spacing: 0;
+  }
+  &-container{
+    width: vw(750);
+    height: vw(248);
+     padding: 0 0 vw(36) vw(28);
+    //padding: vw(24);
+  }
+  &-container-title{
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #2B333F;
+    letter-spacing: vw(-0.38);
+    text-align: left;
+    line-height: vw(32);
+    margin: 0 0 vw(16) 0;
+  }
+  &-container-title-input{
+    width: vw(40);
+    height: vw(40);
+    margin-right: vw(16);
+  }
+  &-container-title-label{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: vw(-0.54);
+    text-align: left;
+    line-height: ft(48);
+  }
+  &-container-title-div{
+    height: vw(88);
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  &-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: vw(128);
+    justify-content: center;
+    background: #FFFFFF;
+    box-shadow: 0 vw(4) vw(40) 0 #DFE3E8;
+  }
+  .save-btn{
+    background: #255BDA;
+    border-radius: vw(8);
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    width: vw(686);
+    height: vw(96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &-container-img{
+    width: vw(40);
+    height: vw(40);
+    margin-right: vw(8);
+  }
+  &-container-text{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing:vw(-0.54);
+    text-align: left;
+    line-height: vw(48);
+  }
+  &-container-inpiut{
+    margin-bottom: vw(48);
+  }
+}
+.my-radio .am-radio {
+  padding: vw(5);
+  border: vw(2) solid #ccc;
+  border-radius: 50%;
+  margin-right: vw(10);
+}
+
+input[type="radio"] {
+  width: vw(40);
+  height: vw(40);
+  opacity: 0;
+}
+
+label {
+  position: absolute;
+  left: vw(10);
+  top: vw(26);
+  width: vw(40);
+  height: vw(40);
+  border-radius: 50%;
+  border: vw(2) solid #999;
+}
+
+/*设置选中的input的样式*/
+/* + 是兄弟选择器,获取选中后的label元素*/
+input:checked+label {
+  background-color: #fe6d32;
+  border: vw(2) solid #fe6d32;
+}
+
+input:checked+label::after {
+  position: absolute;
+  content: "";
+  width: vw(10);
+  height: vw(20);
+  top: vw(6);
+  left: vw(12);
+  border: vw(4) solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg)
+}
+
+

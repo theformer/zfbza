@@ -1,0 +1,113 @@
+$prefix: 'house-info';
+
+.#{$prefix} {
+  min-height: 100vh;
+
+  &-background {
+    background: #f2f5f8;
+  }
+
+  &-bg {
+    background: #f2f5f8;
+    width: 100%;
+    height: vw(20);
+  }
+
+  &-head {
+    height: vw(614);
+    width: 100%;
+    text-align: center;
+
+    span {
+      font-family: PingFangSC-Regular;
+      font-size: ft(32);
+      color: #2B333F;
+      letter-spacing: 0;
+      line-height: vw(28);
+      display: block;
+      margin: vw(48) auto;
+    }
+
+    img {
+      width: vw(442);
+      height: vw(442);
+      margin: vw(48) auto;
+    }
+  }
+
+  &-main {
+    padding: vw(16);
+  }
+
+  &-main-col {
+    padding: vw(16);
+  }
+
+  &-main-col-label {
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.44);
+    text-align: left;
+    line-height: vw(28);
+    margin-right: vw(32);
+    min-width: vw(112);
+    display: flex;
+  }
+
+  &-main-col-value {
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+    flex: 1;
+  }
+
+  &-main-col-phone {
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #255BDA;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+  }
+
+  &-main-col-label-warning {
+    width: vw(27.4);
+    height: vw(27.4);
+    margin-right: vw(10.4);
+  }
+
+  &-main-col-label-text {
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #E63633;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(24);
+  }
+
+  &-main-footer {
+    padding: vw(32);
+  }
+
+  &-main-col-footer-label {
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+  }
+
+  &-main-col-footer-main {
+    margin-top: vw(18.2);
+    //display: flex;
+  }
+
+  .green {
+    color: #00B578;
+  }
+}

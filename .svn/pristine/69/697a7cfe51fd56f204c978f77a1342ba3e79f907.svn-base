@@ -1,0 +1,113 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast, Button, WhiteSpace } from 'antd-mobile'
+import './index.scss'
+import {back, getUrlValue, jump, setTitle} from '../../utlis/utlis'
+import http from '../../utlis/http'
+import NowTime from '../../common/now-time'
+import QRCode from 'qrcodejs2'
+import {Control} from "react-keeper";
+
+const prefix = 'wenzhou-healthy'
+let dateTime = new Date();
+Toast.config({
+    mask: false
+})
+
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted || window.performance && window.performance.navigation.type == 2) {
+        console.log('window.performance.navigation.type: ' + window.performance.navigation.type)
+        // location.refresh();   //此处可以写你的实际应用的代码
+        Control.go(-1)
+    }
+}, false);
+class WenZhouHealthy extends Component {
+    constructor(props) {
+        super(props)
+        this.store = this.props.store.testStore
+    }
+    state = {
+        qrcode: '',
+        healthyName: '',
+        codeType: '#000',
+        dateTime: dateTime.toLocaleDateString().replace(/\//ig, "-")
+    }
+
+
+    componentDidMount() {
+        // 修改mobx中存储的值
+        setTitle.call(this, '温州健康码')
+        this.store.name = 'name'
+        this.setState({
+            QRCode: localStorage.getItem('QRCode'),
+            codeType: localStorage.getItem('codeType'),
+            healthyName: localStorage.getItem('healthyName')
+        }, () => {
+            this.drawCode()
+        })
+    }
+    drawCode() {
+        Toast.loading()
+        const QRCode = require('qrcodejs2');
+        var qrcode = new QRCode('myQrcode', {
+            text: this.state.QRCode,
+            width: 221 / 375 * document.documentElement.clientWidth,
+            height: 221 / 375 * document.documentElement.clientWidth,
+            padding: 0, // 生成二维码四周自动留边宽度，不传入默认为0
+            correctLevel: QRCode.CorrectLevel.L, // 二维码可辨识度
+            colorDark: this.state.codeType == 'green' ? '#3DA93D' : this.state.codeType == 'red' ? '#DC143C' : this.state.codeType == 'yellow' ? '#FCC20B' : '#000',
+            colorLight: '#ffffff',
+            callback: (res) => {
+                Toast.hide()
+                console.log('我是成功返回的res', res)
+            }
+        })
+    }
+    toIndex() {
+        // 跳转
+        jump.call(this, '/index')
+    }
+    goBack() {
+        // 返回
+        back.call(this)
+    }
+    render() {
+        // 从mobx中拿所需属性
+
+        return (
+            <div className={`${prefix}`}>
+                <div className={`${prefix}-main`}>
+                    <div className={`${prefix}-main-head`}>
+                        <NowTime></NowTime>
+                    </div>
+                    <div className={`${prefix}-main-code`}>
+                        <div className={`${prefix}-main-code-healthy`} id="myQrcode" ref="myQrcode"></div>
+                        <div className={`${prefix}-name`}>
+                            <span className={`${prefix}-name-block`}>{this.state.healthyName}</span>
+                        </div>
+                    </div>
+                    <div className={`${prefix}-footer`}>
+                        <img className={`${prefix}-footer-png`} src={require('./../../assets/imgs/healthy/prompt@2x.png')} alt="" />
+                        <span className={`${prefix}-footer-text`}>绿码：凭此码可在浙江省范围内，请主动出示，配合检查；并做好自身防护工作，码颜色将根据您的申报由当地政府按照相关政策动态更新，出行前请仔细检查您的健康码</span>
+                    </div>
+                </div>
+                <div className={`${prefix}-phone`}>
+                    <div className={`${prefix}-phone-info`}>
+                        <img className={`${prefix}-phone-png`} src={require('./../../assets/imgs/healthy/phone@2x.png')} alt="" />
+                        <span className={`${prefix}-phone-text`}>服务热线: 0577-12345</span>
+                    </div>
+                    <span className={`${prefix}-phone-eg`}>
+                        - 本服务由当地人民政府提供 -
+                    </span>
+                </div>
+            </div>
+        )
+    }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+    observer(WenZhouHealthy)
+)

@@ -1,0 +1,760 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast, Card, Carousel, Tabs, Button, WhiteSpace } from 'antd-mobile'
+import './index.scss'
+import { back, getUrlParam, jump, pxTovw, setTitle } from '../../utlis/utlis'
+import http from '../../utlis/http'
+import QRCode from 'qrcodejs2'
+import Modal from "../../common/dialog-phone";
+import { Control } from "react-keeper";
+import {
+    read,
+    markRead,
+    token,
+    lb
+} from "../../utlis/api";
+
+const prefix = 'home-page'
+Toast.config({
+    mask: false
+})
+
+/**
+ * @description 生成二维码时所用code与对应的类型关联对象
+ * @property enterprise 商家
+ * @property product 普通产品
+ * @property service 公共服务
+ * @property coupon 折扣现金券
+ * @property redcoupon 红包现金券
+ */
+const qrcodeMap = {
+    enterprise: {
+        code: '001',
+        type: ''
+    },
+    product: {
+        code: '002',
+        type: ''
+    },
+    service: {
+        code: '003',
+        type: ''
+    },
+    coupon: {
+        code: 'yykj_001',
+        type: '0'
+    },
+    redCoupon: {
+        code: 'yykj_002',
+        type: '1'
+    }
+}
+let rootSize = parseFloat(document.documentElement.style.fontSize)
+
+class Index extends Component {
+    constructor(props) {
+        super(props)
+        this.store = this.props.store.testStore
+        this.commonStore = this.props.store.commonStore
+
+        this.qrcode = React.createRef()
+
+        this.state = {
+            tabs: [
+                { title: '健康码', sub: '0' },
+                { title: '可信身份码', sub: '1' },
+            ],
+            qrcodeWidth: rootSize * 3.6,
+            qrcodeHeight: rootSize * 3.6,
+            codeLoading: false,
+            codeType: '#000',
+            codeType1: '#000',
+            QRCode: '',    //1是可信码，0是健康码
+            QRCode1: '',
+            data: ['1', '2', '3'],
+            slideIndex: 0,
+            imgHeight: 176,
+            coupon: null,
+            urlList: [],
+            messageList: [],
+            userInfo: {
+            },
+            pageSize: 1,
+            pageNum: 20,
+            codeImg: '',
+            codeImg1: '',
+            healthyName: '', //传到温州健康码页面的名字
+            userId: '',
+            complexName: '',
+            complexCode: '',
+            healthyCode: false,
+            modalVisible: false,
+            unLoginDia: false,           //用户弹框
+            agreementText: false,        //进入页面，温馨提示弹框
+            agreementDia: false,         //该账户是否同意
+        }
+    }
+
+    componentWillMount() {
+        window.poph5 = true
+        console.log(11111)
+        // window.removeEventListener('pageshow',window.bindPageShow)
+    }
+    examine() {
+        read().then(res => {
+
+        })
+    }
+    componentDidMount() {
+        // setTitle.call(this, '首页')
+        // this.examine()
+        this.getToken()
+        // this.getUserInfo()   //获取个人信息
+        this.swiper()
+    }
+
+    componentWillUnmount() {
+        window.poph5 = false
+
+    }
+
+    getToken() {
+        token({ secretKey: 'WkFYUS9ZaXl1bkAyMDIw' }).then(res => {
+            if (res.code != 1) {
+                console.log('我没走这个吗')
+                localStorage.setItem('token', res.data.data)
+                localStorage.setItem('unlogin', '1')
+                this.swiper()
+            } else {
+                console.log('我为什么会走这个呢')
+                localStorage.setItem('unlogin', '')
+            }
+
+
+        })
+
+    }
+    //调取可信身份证
+    believeCodeQuery() {
+        http.get({
+            url: '/api/user/qrCode/create',
+            data: {
+                userId: this.state.userInfo.id,
+            }
+        }).then(res => {
+            if (res.data.code == 1) {
+                this.setState({
+                    QRCode1: res.data.data.qrCode,    //二维码
+                    codeType1: res.data.data.level,     //健康码颜色
+                })
+                this.drawCode1()
+            }
+        })
+    }
+
+    drawCode1() {
+        // Toast.loading()
+        // if()
+        const QRCode = require('qrcodejs2');
+        var qrcode = new QRCode('qrcode', {
+            text: this.state.QRCode1,
+            width: 180 / 375 * document.documentElement.clientWidth,
+            height: 180 / 375 * document.documentElement.clientWidth,
+            padding: 0, // 生成二维码四周自动留边宽度，不传入默认为0
+            correctLevel: QRCode.CorrectLevel.L, // 二维码可辨识度
+            colorDark: this.state.codeType1 == 'green' ? '#3DA93D' : this.state.codeType1 == 'red' ? '#DC143C' : this.state.codeType1 == 'yellow' ? '#FCC20B' : '#000',
+            colorLight: '#ffffff',
+            callback: (res) => {
+                this.setState({
+                    codeImg1: res.path,
+                })
+            }
+        })
+    }
+
+
+    //调取健康码
+    healthCodeQuery() {
+        http.get({
+            url: '/api/user/health/code/query',
+            data: {
+                userId: this.state.userInfo.id,
+                source: 'ZLB'
+            }
+        }).then(res => {
+            if (res.data.code == 1) {
+                this.setState({
+                    QRCode: res.data.data.qrCode,    //二维码
+                    codeType: res.data.data.level,     //健康码颜色
+                    healthyName: res.data.data.name,
+                    healthyCode: true
+                })
+                this.drawCode()
+            } else {
+                this.setState({
+                    healthyCode: false,
+                })
+            }
+        })
+    }
+
+    drawCode() {
+        const QRCode = require('qrcodejs2');
+        var qrcode = new QRCode('myQrcode', {
+            text: this.state.QRCode,
+            width: 180 / 375 * document.documentElement.clientWidth,
+            height: 180 / 375 * document.documentElement.clientWidth,
+            padding: 0, // 生成二维码四周自动留边宽度，不传入默认为0
+            correctLevel: QRCode.CorrectLevel.L, // 二维码可辨识度
+            colorDark: this.state.codeType == 'green' ? '#3DA93D' : this.state.codeType == 'red' ? '#DC143C' : this.state.codeType == 'yellow' ? '#FCC20B' : '#000',
+            colorLight: '#ffffff',
+            callback: (res) => {
+                // Toast.hide()
+                this.setState({
+                    codeImg: res.path,
+                })
+            }
+        })
+    }
+
+
+    getMessageList() {
+        let complexCode = localStorage.getItem('complexCode')
+        http.get({
+            url: '/api/news/list',
+            data: {
+                complexCode: complexCode,
+                userId: this.state.userInfo.id,
+                pageCount: this.state.pageSize,
+                pageSize: this.state.pageNum
+            }
+        }).then(res => {
+            if (res.data.code == 1) {
+                this.setState({
+                    messageList: res.data.data.array
+                })
+            }
+        })
+    }
+
+    //获取用户信息
+    getUserInfo() {
+        let userInfo = localStorage.getItem('userInfo')
+        if (userInfo) {
+            userInfo = JSON.parse(userInfo)
+        }
+        http.get({
+            url: '/api/zlb/user/idCard',
+            data: {
+                zlbUserId: userInfo.userid
+            }
+        }).then(res => {
+            if (res.data.code == 1) {
+                localStorage.setItem('zjuserid', res.data.data.id)
+                localStorage.setItem('photoImg', res.data.data.imageUrl)
+                localStorage.setItem('nation', res.data.data.nation)
+                this.setState({
+                    userInfo: res.data.data
+                }, () => {
+                    this.getMessageList() //获取所有消息
+                    this.healthCodeQuery()
+                    this.believeCodeQuery()
+                    this.getUserComplexList()
+                })
+            }
+        })
+    }
+    getUserComplexList() {
+        http.get({
+            url: '/api/myComplex/info',
+            data: {
+                userId: localStorage.getItem('zjuserid'),
+            }
+        }).then(res => {
+            if (res.data.code == 1) {
+                if (res.data.data.length > 0) {
+                    let data = res.data.data
+                    let item = data.filter((e, i) => {
+                        if (e.isPresent == 1) {
+                            return e
+                        }
+                    })
+                    if (item.length > 0) {
+                        this.setState({
+                            complexName: item[0].complexName,
+                            complexCode: item[0].complexCode
+                        }, () => {
+                            localStorage.setItem('complexName', this.state.complexName)
+                            localStorage.setItem('complexCode', this.state.complexCode)
+                        })
+                    } else {
+                        this.checkHousing(data[0].complexName, data[0].complexCode)
+                    }
+                }
+            }
+        })
+    }
+    checkHousing(a, b) {
+        let data = {
+            userId: localStorage.getItem('zjuserid'),
+            complexName: a,              //a为小区名字 b为小区code
+            complexCode: b,
+        }
+        http.post({
+            url: '/api/user/update/present/complex',
+            data
+        }).then(res => {
+            console.log(res, '修改小区状态返回的数据')
+            const { code, message } = res.data
+            if (code !== '1') {
+                return
+            }
+            localStorage.setItem('complexCode', a)
+            localStorage.setItem('complexName', b)
+            this.setState({
+                complexName: a,
+                complexCode: b
+            })
+
+        }).catch(err => {
+        })
+    }
+    //获取轮播图
+    swiper() {
+        lb().then(res => {
+            if (res.code != 1) return
+            this.setState({
+                urlList: res.data
+            })
+        })
+    }
+    //判断用户是否有账号
+    isLogin() {
+        console.log(localStorage.getItem('unlogin'), '我是啥')
+        if (localStorage.getItem('unlogin') != 1) {
+            this.setState({
+                unLoginDia: true
+            })
+
+        }
+    }
+    toIndex() {
+        // 跳转
+        jump.call(this, '/index')
+    }
+
+    goBack() {
+        // 返回
+        back.call(this)
+    }
+
+    //跳转至个人中心
+    goPersonalInformation() {
+        this.isLogin()
+        jump.call(this, '/personal-information')
+        // if (localStorage.getItem('unlogin') != 1) {
+        //     return
+        // } else {
+        //     jump.call(this, '/personal-information')
+        // }
+    }
+
+    //跳转至信息宣传页面
+    goCarousel() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/conduct')
+        }
+
+    }
+
+    //跳转我的e家
+    goEhome() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/e-home')
+        }
+
+    }
+
+    goMyhousing() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/myhousing')
+        }
+
+    }
+
+    goMyhouse() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/myhouse')
+        }
+
+    }
+
+    goMycar() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/mycar')
+        }
+
+
+    }
+
+    //跳转到消息列表
+    goMessageList() {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/message-list')
+        }
+    }
+
+    //跳转至信息宣传页面
+    goConduct() {
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            jump.call(this, '/conduct')
+        }
+
+    }
+    goCarouselDetail(val) {
+        this.isLogin()
+        if (localStorage.getItem('unlogin') != 1) {
+            return
+        } else {
+            localStorage.setItem('wzid', val.id)
+            jump.call(this, '/content')
+        }
+
+    }
+    goWenzhouhealthy() {
+        jump.call(this, '/wenzhou-healthy')
+        this.isLogin()
+        // if (localStorage.getItem('unlogin') != 1) {
+        //     return
+        // } else {
+        //     localStorage.setItem('QRCode', this.state.QRCode)
+        //     localStorage.setItem('codeType', this.state.codeType)
+        //     localStorage.setItem('healthyName', this.state.healthyName)
+        //     console.log(localStorage.getItem('QRCode'))
+        //     jump.call(this, '/wenzhou-healthy')
+        // }
+    }
+    //未登记账号的情况下，进行二维码扫码认真
+    saveClick() {
+        window.ap.scan(res => {
+
+            if (res.code.indexOf('complexid') > -1) {
+                let complexCode = getUrlParam(res.code, 'complexid')
+                localStorage.setItem('complexCode', complexCode)
+                jump.call(this, '/add-member')
+            } else {
+                Toast.info('请扫描小区码')
+            }
+
+            console.log(res, '我是返回的res')
+        });
+    }
+    //切换二维码刷新
+    changeTabs(e) {
+    }
+    // 生活服务
+    goLivePage(code) {
+        if (code === 1) {   // 生活缴费
+            window.location.href = 'https://render.alipay.com/p/s/i/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20000193%26url%3D%252Fwww%252Findex.htm'
+        } else if (code === 2) {  // 手机充值
+            window.location.href = 'https://render.alipay.com/p/s/i/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20000987%26url%3D%252Fwww%252Findex.html%253FchInfo%253Dwuy'
+        } else if (code === 3) {    // 送药上门
+            window.location.href = 'alipays://platformapi/startapp?appId=2021001105650943&page=pages/AliHealthWeb/index&query=launchMode%3DtoShopPage%26trackid%3D0508%26spm%3Da2ou9.offlinead.xiaoquapp.O2O'
+        } else if (code === 4) {    // 预约接种
+            window.location.href = 'alipays://platformapi/startapp?appId=2019103168845209&page=pages/Home/index&query=spm%3Da2ou9.offlinead.xiaoquapp.yimiao'
+        } else if (code === 5) {    // 洗车服务
+            window.location.href = 'https://render.alipay.com/p/c/car_rights_center?__webview_options__=allowsBounceVertical%3DNO?chinfo=shequ'
+        } else if (code === 6) {    // 加油优惠
+            window.location.href = 'alipays://platformapi/startapp?appId=2019041063881050&page=pages%2Fstation-list%2Findex&chInfo=shequwuye'
+        } else if (code === 7) {    // 我的快递
+            window.location.href = 'alipays://platformapi/startapp?appId=2021001102660294&chInfo=sqwy'
+        }
+    }
+
+
+    render() {
+        let { userInfo, messageList, unLoginDia, agreementDia, agreementText } = this.state
+        // 从mobx中拿所需属性
+        return (
+            <React.Fragment>
+                <div className={`${prefix}`}>
+                    <div className={`${prefix}-header`}>
+                        <div className={`${prefix}-header-left`}>
+                            <img className={`${prefix}-header-left-logo`}
+                                src={require('./../../assets/imgs/logins/Home_icon_logo_100d@3x.png')} />
+                            <span className={`${prefix}-header-left-community`}>{
+                                (this.state.complexName != '') ? this.state.complexName + ' ' + '(当前)' : '暂无小区' + ' ' + '(当前)'}</span>
+                        </div>
+                        <div className={`${prefix}-header-right`} onClick={this.goPersonalInformation.bind(this)}>
+                            <img className={`${prefix}-header-right-set`}
+                                src={require('./../../assets/imgs/homepage/setting@2x.png')} />
+                        </div>
+                    </div>
+                    <div>
+                        <div className={`${prefix}-card`}>
+                            <div className={`${prefix}-card-user`}>
+                                <div className={`${prefix}-card-photo`}>
+                                    {
+                                        userInfo.imageUrl ? <img className={`${prefix}-card-jay`} src={userInfo.imageUrl} alt="" /> :
+                                            <img className={`${prefix}-card-jay`} src={require('./../../assets/imgs/homepage/house_icon_registered_d.png')} alt="" />
+                                    }
+                                    <div className={`${prefix}-card-name`}>
+                                        <span className={`${prefix}-card-name-text`}>{userInfo.userName || '无数据'}</span>
+                                        <span className={`${prefix}-card-name-idcard`}>{userInfo.certificateId || '无数据'}</span>
+                                    </div>
+                                </div>
+                                <div className={`${prefix}-card-right`} onClick={this.goWenzhouhealthy.bind(this)}>
+                                    {/* <span className={`${prefix}-card-right-personal`}>二维码</span> */}
+                                    <img src={require('../../assets/imgs/homepage/code@2x.png')}/>
+                                </div>
+                            </div>
+                            <div className={`${prefix}-card-icon`}>
+                                <div className="card-icon-item" onClick={this.goMyhouse.bind(this)}>
+                                    <img src={require('../../assets/imgs/homepage/my_house@2x.png')} />
+                                    <span>我的房屋</span>
+                                </div>
+                                <div className="card-icon-item" onClick={this.goMycar.bind(this)}>
+                                    <img src={require('../../assets/imgs/homepage/my_car@2x.png')} />
+                                    <span>我的车辆</span>
+                                </div>
+                                <div className="card-icon-item" onClick={this.goEhome.bind(this)}>
+                                    <img src={require('../../assets/imgs/homepage/my_e_family@2x.png')} />
+                                    <span>我的e家</span>
+                                </div>
+                                <div className="card-icon-item" onClick={this.goMycar.bind(this)}>
+                                    <img src={require('../../assets/imgs/homepage/visitor_invitation@2x.png')} />
+                                    <span>访客邀请</span>
+                                </div>
+                            </div>
+                        </div>
+                        {/*轮播图插件*/}
+                        <div className={`${prefix}-carousel`}>
+                            {/*<div className={}>*/}
+                            <img className={`${prefix}-carousel-png`}
+                                src={require('./../../assets/imgs/homepage/notice@2x.png')} alt="" />
+                            {/*</div>*/}
+                            <Carousel className="my-carousel"
+                                vertical        //垂直显示
+                                dots={false}    //是否显示面板指示点
+                                autoplay        //是否自动切换
+                                infinite        //是否循环播放
+                            >
+                                {
+                                    messageList.length > 0 ? messageList.map(e => {
+                                        return <div className="v-item word-space-one"
+                                            onClick={this.goMessageList.bind(this)}>{' · ' + e.content}</div>
+                                    }) : <div className="v-item" onClick={this.goMessageList.bind(this)}>暂无数据</div>
+                                }
+                            </Carousel>
+                        </div>
+                    </div>
+
+                    {/*物业服务*/}
+                    {/* <div className={`${prefix}-box`}>
+                        <div className={`${prefix}-box-title`}>
+                            物业服务
+                        </div>
+                        <div className={`${prefix}-box-content`}>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhouse.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/report_repair@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>报事报修</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhouse.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/pay_notice@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>缴费通知</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhouse.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/property_log@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>物业日志</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhouse.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/complaints_suggestions@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>投诉建议</span>
+                            </div>
+                        </div>
+                    </div> */}
+                    {/*  信息宣传同事已写      */}
+                    <div className={`${prefix}-main`}>
+                        <div className={`${prefix}-main-head`}>
+                            <span className={`${prefix}-main-head-title`}>信息宣传</span>
+                            <div className={`${prefix}-main-head-right flex`} onClick={this.goConduct.bind(this)}>
+                                <span className={`${prefix}-head-right-more`}>更多</span>
+                                <img className={'main-more'} src={require('./../../assets/imgs/next@2x.png')} alt="" />
+                            </div>
+                        </div>
+                        <div className={'carousel-height'}>
+                            <Carousel
+                                autoplay={true}    //是否自动切换
+                                infinite={true}    //是否循环播放
+                                selectedIndex={this.state.slideIndex}    //手动设置设置当前索引
+                            >
+                                {
+                                    (() => {
+                                        {
+                                            return this.state.urlList.map((val, index) => (
+                                                <div className={'swiper-box flex flex-center position-relative'} key={val.id}>
+                                                    <img
+                                                        onClick={this.goCarouselDetail.bind(this, val)}
+                                                        src={val.coverPicture}
+                                                        alt="loading"
+                                                        style={{ borderRadius: pxTovw(8), width: "100%", height: "100%" }}
+                                                        onLoad={() => {
+                                                            // fire window resize event to change height
+                                                            window.dispatchEvent(new Event('resize'));
+                                                            this.setState({ imgHeight: 'auto' });
+                                                        }}
+                                                    />
+                                                    <div className={'bottom-text bottom-title  position-absolute '} style={{ WebkitBoxOrient: 'vertical' }}>
+                                                        <div className={' word-space-two word-break'}>{val.title}</div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    })()
+                                }
+                            </Carousel>
+                        </div>
+                    </div>
+
+
+                    {/* 生活服务 */}
+                    <div className={`${prefix}-box`}>
+                        <div className={`${prefix}-box-title`}>
+                            生活服务
+                        </div>
+                        <div className={`${prefix}-box-content`}>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhousing.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/social_security@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>社保查询</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goMyhouse.bind(this)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/accumulation_fund@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>公积金查询</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goMycar.bind(this)} onClick={this.goLivePage.bind(this, 1)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/living_expenses@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>生活缴费</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 2)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/mobile_recharge@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>手机充值</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 3)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/appointment_vaccination@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>预约接种</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 4)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/drug_delivery@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>送药上门</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 5)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/car_wash@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>洗车服务</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 6)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/refuelling_discount@2x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>加油优惠</span>
+                            </div>
+                            <div className={`${prefix}-box-item`} onClick={this.goEhome.bind(this)} onClick={this.goLivePage.bind(this, 7)}>
+                                <img className={`${prefix}-box-item-png`}
+                                    src={require('./../../assets/imgs/homepage/my_express@3x.png')} alt="" />
+                                <span className={`${prefix}-box-item-text`}>我的快递</span>
+                            </div>
+                            <div className={`${prefix}-box-item`}></div>
+                            <div className={`${prefix}-box-item`}></div>
+                            <div className={`${prefix}-box-item`}></div>
+                        </div>
+                    </div>
+
+
+                </div>
+                {
+                    unLoginDia ? <div className={`agreement-dia`}>
+                        <div className={`dia-matter policy`}>
+                            <div className={`matter-tips`}>
+                                <div className={`matter-title`}>小区尚未登记</div>
+                            </div>
+                            <div className={`matter-content`}>
+                                请扫描小区二维码进行登记
+                    </div>
+                            <div className={`matter-consent`} onClick={this.saveClick.bind(this)}>确定</div>
+                        </div>
+                    </div> : <span></span>
+                }
+                {
+                    agreementDia ? <div className={`agreement-dia`}>
+                        <div className={`dia-matter`}>
+                            <div className={`dia-head`}>您需要同意本隐私政策才能
+                            继续使用温州智安小区助手</div>
+                            <div className={`dia-content`}>若您不同意本隐私政策，很遗憾我们将无法为您提供服务。</div>
+                            <div className={`dia-footer flex`}>
+                                <span className={`footer-left`} onClick={e => this.setState({ agreementDia: false })}>仍不同意</span>
+                                <span className={`footer-right`} onClick={this.agreementClick.bind(this)}>查看协议</span>
+                            </div>
+                        </div>
+
+                    </div> : <span></span>
+                }
+                {
+                    agreementText ? <div className={`agreement-dia`}>
+                        <div className={`dia-matter policy`}>
+                            <div className={`matter-tips`}>
+                                <div>温馨提示</div>
+                            </div>
+                            <div className={`matter-title`}>
+                                感谢您信任并使用温州智安小区助手！
+                                我们非常重视您的个人信息和隐私保护。为了更好地保障您的个人权益，在使用我们的产品前，请务必审慎阅读
+                            <span className={`matter-policy`} onClick={this.goPrivacyClick.bind(this)}>《隐私政策》</span>内的所有条款，我们将严格按照您同意的条款使用您的个人信息，以便为您提供更好的服务。
+                        </div>
+                            <div className={`matter-agree`}>您点击“同意”的行为即表示您已阅读完毕并同意以上协议的全部内容。如您同意以上协议内容，请点击“同意”，开始使用我们的产品和服务。</div>
+                            <div className={`matter-footer flex flex-column`}>
+                                <div className={`matter-consent`} onClick={this.consentClick.bind(this)}>同意</div>
+                                <div className={`matter-unconsent`} onClick={this.unConsentClick.bind(this)}>不同意</div>
+                            </div>
+                        </div>
+                    </div> : <span></span>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+    observer(Index)
+)

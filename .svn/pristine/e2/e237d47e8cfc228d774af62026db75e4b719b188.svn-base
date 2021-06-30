@@ -1,0 +1,152 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast, Button, WhiteSpace,DatePicker,List } from 'antd-mobile'
+import './index.scss'
+import {back, jump, setTitle} from '../../utlis/utlis'
+import http from '../../utlis/http'
+
+const prefix = 'visitor-info'
+Toast.config({
+  mask: false
+})
+class VisitorInfo extends Component {
+  constructor(props) {
+    super(props)
+  }
+  state = {
+    type: 3,
+    startDate: '',
+    endDate: '',
+  }
+  componentDidMount() {
+    // 修改mobx中存储的值
+    setTitle.call(this, ' ')
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, '/index')
+  }
+  goBack() {
+    // 返回
+    back.call(this)
+  }
+  checkDate(date) {
+    let startDateTemp = this.state.startDate
+    if (!startDateTemp) {
+      Toast.fail('请选择开始时间')
+      return
+    }
+    let startTime = new Date(startDateTemp).getTime()
+    let endTime = new Date(date).getTime()
+    if (startTime > endTime) {
+      Toast.fail('租住开始时间不得大于结束时间')
+      return
+    }
+    this.setState({ endDate: date })
+  }
+  checkStartDate(date) {
+    this.setState({
+      startDate: date
+    })
+    if (this.state.endDate !== '') {
+      this.setState({
+        endDate: ''
+      })
+    }
+  }
+  onChangePhone =(e) =>{
+    e.persist()
+    this.setState({
+      phone:e.target.value
+    })
+  }
+  saveBtn() {
+
+  }
+  render() {
+    const { value }  = this.state
+    // 从mobx中拿所需属性
+    return (
+      <div className={`${prefix} flex flex-column`}>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-head`}>
+            访客信息
+          </div>
+          <div className={`${prefix}-head flex align-center`}>
+            <img src={require('./../../assets/imgs/common/Home_icon_community_d@2x.png')}  className={`left-png`} alt=""/>
+            <div className={`right-text`}>汇景家园</div>
+          </div>
+        </div>
+        <div>
+          <div className={`${prefix}-box padding-left32`}>
+            <span className={`box-title flex flex-column`}>被访人</span>
+            <input
+                placeholder='请填写访问的业主、楼栋、单元、房屋'
+                value={this.state.phone}
+                className={`${prefix}-form-name-ipt ipt-none name-card`}
+                onChange={this.onChangePhone.bind(this)}/>
+          </div>
+          <div className={`${prefix}-container`}>
+            <div className={`${prefix}-container-title`}>到访时间</div>
+            <DatePicker
+                mode="date"
+                title="开始时间"
+                extra="请选择开始时间"
+                value={this.state.startDate}
+                format
+                onChange={date => this.checkStartDate(date)}
+            >
+              <List.Item arrow="horizontal">租住开始时间</List.Item>
+            </DatePicker>
+            <DatePicker
+                mode="date"
+                title="结束时间"
+                extra="请选择结束时间"
+                value={this.state.endDate}
+                onChange={date => this.checkDate(date)}
+            >
+              <List.Item arrow="horizontal">租住结束时间</List.Item>
+            </DatePicker>
+          </div>
+          <div  className={`${prefix}-box padding-left32`}>
+            <span  className={`box-title flex flex-column`}>同行同伴</span>
+            <input
+                placeholder='请输入同伴数'
+                value={this.state.phone}
+                className={`${prefix}-form-name-ipt ipt-none name-card`}
+                onChange={this.onChangePhone.bind(this)}/>
+          </div>
+          <div  className={`${prefix}-box padding-left32`}>
+            <span  className={`box-title flex flex-column`}>车辆(选填)</span>
+            <input
+                placeholder='请填写访问的业主、楼栋、单元、房屋'
+                value={this.state.phone}
+                className={`${prefix}-form-name-ipt ipt-none name-card`}
+                onChange={this.onChangePhone.bind(this)}/>
+          </div>
+        </div>
+        {
+          (() => {
+            if (value && value.length > 0) {
+              return <div className={`${prefix}-footer flex1 flex align-center`}>
+                <input type="button" className={'save-btn files-save-btn'} onClick={this.saveBtn.bind(this)} value="下一步"/>
+              </div>
+            }
+            return <div className={`${prefix}-footer flex1 flex align-center`}>
+              <input type="button" className={'save-btn'} onClick={this.saveBtn.bind(this)} value="下一步"/>
+            </div>
+
+          })()
+        }
+      </div>
+    )
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+  observer(VisitorInfo)
+)

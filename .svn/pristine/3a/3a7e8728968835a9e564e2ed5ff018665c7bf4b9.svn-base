@@ -1,0 +1,275 @@
+$prefix: "wenzhou-healthy";
+
+.#{$prefix} {
+  background: #f2f5f8;
+  height: 100vh;
+  padding: vw(40);
+  position: relative;
+  overflow: scroll;
+
+  //&-bg{
+  //  height: vw(1088);
+  //  width: vw(686);
+  //  position: absolute;
+  //  z-index: -1;
+  //  top: 0;
+  //  left: 0;
+  //}
+  &-main {
+    height: vw(1088);
+    width: 100%;
+    // margin: vw(16) auto;
+    background: url("../../assets/imgs/healthy/codebg.png");
+    background-size: 100% 100%;
+  }
+  &-main-head {
+  }
+  &-main-head-time {
+    font-family: PingFangSC-Medium;
+    font-size: ft(90);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: vw(80);
+    display: block;
+    margin-bottom: vw(56);
+  }
+  &-main-head-date {
+    font-family: PingFangSC-Medium;
+    font-size: ft(72);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: ft(60);
+    display: block;
+    padding-top: vw(56);
+    padding-bottom: vw(24);
+  }
+  &-line {
+    height: vw(2);
+    background: linear-gradient(to right, #d8d8d8, #d8d8d8 4.5px, transparent 4.5px, transparent);
+    background-size: vw(18) 100%;
+    width: vw(624);
+    margin: 0 auto;
+  }
+  &-main-code {
+    //margin: vw(56) auto vw(32) auto;
+  }
+  &-main-code-healthy {
+    height: vw(442);
+    width: vw(442);
+    margin: vw(58) auto 0 auto;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    canvas{
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &-name {
+    text-align: center;
+    margin-top: vw(32);
+    margin-bottom: vw(48);
+  }
+  &-name-block {
+    font-family: PingFangSC-Medium;
+    font-size: ft(40);
+    color: #404956;
+    letter-spacing: 0;
+    margin-right: vw(24);
+  }
+  &-name-none {
+    font-family: PingFangSC-Medium;
+    font-size: ft(28);
+    color: #255bda;
+    letter-spacing: 0;
+  }
+  &-footer {
+    display: flex;
+    flex-direction: row;
+    padding: 0 vw(48) 0 vw(50.2);
+  }
+  &-footer-png {
+    width: vw(27.4) !important;
+    height: vw(27.4) !important;
+    margin-top: vw(4);
+    margin-right: vw(18.4);
+  }
+  &-footer-text {
+    font-family: PingFangSC-Regular;
+    font-size: ft(26);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: justify;
+    display: block;
+    flex: 1;
+  }
+  &-phone {
+    margin-top: vw(80);
+    text-align: center;
+  }
+  &-phone-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  &-phone-png {
+    width: vw(32.6) !important;
+    height: vw(32.6);
+    margin-right: vw(8);
+  }
+  &-phone-text {
+    font-family: PingFangSC-Medium;
+    font-size: ft(34);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: center;
+  }
+  &-phone-eg {
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #aeb8c6;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  &-record {
+    margin: vw(48) 0 0 0;
+  }
+  &-recordlist {
+    //height: vw(600);
+    .am-list-view-scrollview{
+      overflow: inherit !important;
+    }
+  }
+
+  &-record-title {
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2b333f;
+    letter-spacing: 0;
+    margin-bottom: vw(24);
+    span {
+      margin-right: vw(32);
+    }
+  }
+
+  &-record-item {
+    margin-bottom: vw(32);
+  }
+  &-record-item-time {
+    margin-bottom: vw(16);
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #aeb8c6;
+    letter-spacing: 0;
+    line-height: vw(30);
+    text-align: center;
+  }
+  &-record-itemlist {
+    border-radius: vw(16);
+    background-color: #fff;
+  }
+  &-record-item-list {
+    display: flex;
+    align-items: center;
+    padding: vw(20) vw(32);
+    position: relative;
+  }
+  &-border-btm:after {
+    content: "  ";
+    position: absolute;
+    left: 0;
+    bottom: vw(-24);
+    width: 100%;
+    height: 1px;
+    background-color: #dfe3e8;
+    /* 如果不用 background-color, 使用 border-top:1px solid #f00; 效果是一样的*/
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+    //z-index: 9;
+  }
+  &-list-left {
+    width: vw(96);
+    height: vw(96);
+    border-radius: 50%;
+    margin-right: vw(16);
+    &-photo{
+      width: vw(96);
+      height: vw(96);
+      border-radius: 50%;
+      background: #255BDA;
+      color: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: PingFangSC-Medium;
+      font-size: ft(28);
+      letter-spacing: 0;
+    }
+  }
+  &-list-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  &-list-right-left {
+  }
+  &-list-right-left-top {
+    display: flex;
+    align-items: center;
+    span:first-child {
+      font-family: PingFangSC-Regular;
+      font-size: ft(34);
+      color: #2b333f;
+      line-height: vw(48);
+      margin-right: vw(16);
+    }
+    span:last-child {
+      background: #00b578;
+      border-radius: vw(4);
+      font-family: PingFangSC-Regular;
+      font-size: ft(24);
+      color: #ffffff;
+      letter-spacing: 0;
+      padding: vw(6) vw(12);
+    }
+  }
+  &-list-right-left-btm {
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808da1;
+    line-height: vw(40);
+  }
+  &-list-right-right {
+    width: vw(18);
+    height: vw(34);
+  }
+
+  &-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .blue {
+    color: #255bda !important;
+  }
+  .soonPast {
+    background: #f86e21 !important;
+  }
+  .hasPast {
+    background: #00b578 !important;
+  }
+  .noPast {
+    background: #e63633 !important;
+  }
+  .guoqi {
+    background: #aeb8c6 !important;
+  }
+}

@@ -1,0 +1,65 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast,Button,WhiteSpace } from 'antd-mobile'
+import './index.scss'
+import {back, jump, setTitle} from '../../utlis/utlis'
+import http from '../../utlis/http'
+
+const prefix = 'common-problem'
+Toast.config({
+  mask: false
+})
+class CommonProblem extends Component {
+  constructor(props) {
+    super(props)
+  }
+  componentDidMount() {
+    // 修改mobx中存储的值
+      setTitle.call(this, '常见问题')
+
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, '/index')
+  }
+
+
+  render() {
+    // 从mobx中拿所需属性
+    return (
+      <div className={`${prefix} flex flex-column`}>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-issue`}>1、离开小区了，是否可以搬离房屋，注销车辆？</div>
+          <div className={`main-answer`}>可以。人员搬离：在“我的房屋”，选择要搬离的房屋，自己姓名那栏左滑，出现“搬离”按钮，提交搬离需求；
+            车辆注销：一种是完全注销车辆，删除这辆车所有小区的进出权限。
+            在“我的车辆”的车辆列表，选中要删除的车辆车牌号，左滑出现“注销”按钮，提交注销需求；
+            一种注销车辆一个小区的进出权限，在车辆列表中选中需要操作的车辆车牌号，进去车辆详情，
+            选中需要注销的小区，左滑出现“注销”按钮，提交注销需求。</div>
+        </div>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-issue`}>2、“我的家人”模块主要用于是什么？</div>
+          <div className={`main-answer`}>“我的家人”这里，主要是帮助家人进行身份的可信认证，申请个人可信码和健康码。也为家人登记减少一些登记步骤。</div>
+        </div>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-issue`}>3、线下物业办公室已登记，是否还需要在小程序上登记？</div>
+          <div className={`main-answer`}>不需要。但也可以再次在小程序上登记。</div>
+        </div>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-issue`}>4、小程序上人员或者车辆已删除，但人员或者车辆还是能进小区。</div>
+          <div className={`main-answer`}>这只是小程序中删除，需要联系物业人员，在物业助手平台上查看是否已真正删除，请物业人员进一步处理。</div>
+        </div>
+        <div className={`${prefix}-footer flex1`}>
+
+        </div>
+      </div>
+    )
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+  observer(CommonProblem)
+)

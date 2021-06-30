@@ -1,0 +1,21 @@
+$prefix: 'coordinate-info';
+
+.#{$prefix} {
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  padding: 0 vw(40);
+  box-sizing: border-box;
+  h2 {
+    width: 100%;
+    text-align: center;
+    margin: vw(20) 0;
+  }
+  p {
+    font-size: ft(28);
+    margin: vw(10) 0;
+  }
+  h3{
+    margin: vw(10);
+  }
+}
+

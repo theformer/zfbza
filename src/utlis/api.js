@@ -1,0 +1,16 @@
+// import { get, post } from './http'
+
+// export const read = params => get('/user/protocol/read/get', params)      //查看用户隐私协议是否已读
+// export const markRead = params => post('/user/protocol/read', params)      //隐私政策已读接口
+
+// export const token = params => post('/user/token', params)      //获取token
+// export const lb = params => post('/sys/news/query/lb', params)  //获取轮播图
+
+// export const getUserInfo = (params) => get('/user/info/get', params)
+
+// export default {
+//     read,
+//     markRead,
+//     token,
+//     lb,
+// }

@@ -1,0 +1,48 @@
+$prefix: 'yy-refresh-indicator';
+@keyframes imgRotate{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.#{$prefix} {
+    &-activate {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &-img {
+            width: .4rem;
+            height: .4rem;
+            transform: rotate(180deg);
+            transition: all .3s ease;
+        }
+        &-tip {
+            color: #999;
+            font-size: .28rem;
+        }
+    }
+    &-deactivate {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &-img {
+            width: .4rem;
+            height: .4rem;
+            transform: rotate(0);
+            transition: all .3s ease;
+        }
+    }
+    &-release {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &-img {
+            width: .4rem;
+            height: .4rem;
+            transform: rotate(360deg);
+            animation: imgRotate 1s cubic-bezier(0.39, 0.575, 0.565, 1) infinite;
+            margin-right: .2rem;
+        }
+    }
+}

@@ -1,0 +1,94 @@
+$prefix: 'mycar';
+
+.#{$prefix} {
+  &-my-car {
+    background: #fff;
+    height: auto;
+    //padding-top: vw(16);
+    overflow: hidden;
+    border-top: vw(16) solid #f8f8f8;
+    //border-bottom: vw(16) solid #f8f8f8;
+    margin: 0;
+  }
+
+  &-my-list {
+    width: 100%;
+    // height: vw(150);
+    background: #fff;
+    // padding: vw(16) 0;
+    // margin-bottom: vw(16);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  &-license-content {
+    padding: vw(32);
+  }
+
+  &-license-content span {
+    // margin: vw(32) 0 0 vw(32);
+  }
+
+  &-license {
+    font-size: ft(44);
+    color: #007AFF;
+    font-family: PingFangSC-Medium;
+    letter-spacing: 0;
+    line-height: vw(44);
+  }
+
+  &-tags {
+    padding-top: vw(24);
+  }
+
+  &-one-tags {
+    padding: vw(5) vw(15);
+    margin-right: vw(16);
+    border: vw(2) solid #DFE3E8;
+    border-radius: vw(4);
+    color: #2B333F;
+    font-family: PingFangSC-Regular;
+    font-size: vw(24);
+    letter-spacing: 0;
+  }
+
+  &-footer-button {
+    height: vw(128);
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #FFFFFF;
+    letter-spacing: 0;
+  }
+
+  &-button {
+    width: vw(686);
+    height: vw(96);
+    margin: vw(16) vw(32);
+    background: #255BDA;
+    font-family: PingFangSC-Regular;
+    font-size: vw(34);
+    color: #FFFFFF;
+    letter-spacing: 0;
+
+  }
+
+  &-list-img {
+    width: vw(48);
+    height: vw(48);
+    margin-right: vw(12);
+  }
+
+  &-next-img {
+    height: vw(35);
+    margin-right: vw(27);
+  }
+
+}

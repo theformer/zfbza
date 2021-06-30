@@ -1,0 +1,55 @@
+$prefix: 'register-success';
+
+.#{$prefix} {
+  //height: 100vh;
+  //min-height: 100vh;
+  &-main{
+    text-align: center;
+    //height: vw(404);
+    background: #fff;
+  }
+  &-main-success{
+    width: vw(123.4);
+    height: vw(123.4);
+    margin: vw(90.2) auto vw(34.4) auto;
+  }
+  &-maim-information{
+
+  }
+  &-maim-information-success{
+    font-family: PingFangSC-Regular;
+    font-size: ft(40);
+    color: #2B333F;
+    letter-spacing: 0;
+    line-height: ft(40);
+    margin-bottom:vw(16) ;
+    display: block;
+  }
+  &-maim-information-state{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: ft(28);
+  }
+  &-footer{
+    //background-color: #f2f5f8;
+  }
+  &-footer-png{
+    width: vw(686);
+    height: vw(242);
+    margin: vw(120) auto;
+    border-radius: vw(16);
+  }
+  &-footer-btn{
+    background: #255BDA;
+    width: vw(686);
+    height: vw(96);
+    margin: vw(48) auto 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+}

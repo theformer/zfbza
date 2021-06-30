@@ -1,0 +1,153 @@
+$prefix: "visitor-info";
+
+.#{$prefix} {
+  min-height: 100vh;
+  &-main {
+    margin-left: vw(32);
+  }
+  &-main-search {
+    margin-top: vw(56);
+    width: vw(686);
+    height: vw(72);
+    background-color: #f5f5f7;
+    border-radius: vw(8);
+    .am-search-input {
+      background-color: #f5f5f7;
+    }
+  }
+  .am-list-item {
+    padding-left: 0;
+  }
+  .box-title {
+    font-family: PingFangSC-Regular;
+    font-size: vw(24);
+    color: #2b333f;
+    letter-spacing: 0;
+    margin-bottom: vw(14);
+  }
+  &-head {
+    margin-bottom: vw(48);
+  }
+  &-box {
+    padding: vw(24) vw(32);
+    height: vw(144);
+  }
+  &-main-head {
+    font-family: PingFangSC-Semibold;
+    font-size: ft(56);
+    color: #2b333f;
+    letter-spacing: 0;
+    margin: vw(24) 0 vw(88) 0;
+  }
+  .left-png {
+    width: vw(44);
+    height: vw(44);
+    margin-right: vw(8);
+  }
+  .right-text {
+    font-family: PingFangSC-Regular;
+    font-size: vw(32);
+    color: #2b333f;
+    letter-spacing: 0;
+  }
+  &-container {
+    width: vw(750);
+    height: vw(248);
+    padding: 0 0 vw(36) vw(28);
+    //padding: vw(24);
+    .am-list-content {
+      flex: none;
+    }
+    .am-list-extra {
+      flex: 1;
+      text-align: left !important;
+    }
+  }
+  &-container-title {
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #2b333f;
+    letter-spacing: vw(-0.38);
+    text-align: left;
+    line-height: vw(32);
+    margin: 0 0 vw(16) 0;
+  }
+  &-container-title-input {
+    width: vw(40);
+    height: vw(40);
+    margin-right: vw(16);
+  }
+  &-container-title-label {
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2b333f;
+    letter-spacing: vw(-0.54);
+    text-align: left;
+    line-height: ft(48);
+  }
+  &-container-title-div {
+    height: vw(88);
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  &-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: vw(128);
+    justify-content: center;
+    background: #ffffff;
+    box-shadow: 0 vw(4) vw(40) 0 #dfe3e8;
+  }
+  .save-btn {
+    border-radius: vw(8);
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #ffffff;
+    letter-spacing: 0;
+    text-align: center;
+    width: vw(686);
+    height: vw(96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #a6bcef;
+    border: none;
+  }
+  .files-save-btn {
+    border-radius: vw(8);
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #ffffff;
+    letter-spacing: 0;
+    text-align: center;
+    width: vw(686);
+    height: vw(96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #255bda !important;
+    border: none;
+  }
+
+  .card-item {
+    .am-list-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: vw(100);
+      padding-right: 0;
+      .am-list-extra {
+        display: none;
+      }
+    }
+  }
+}
+// 隐藏时间选择器年月列
+.datePicker {
+  .am-picker-col:first-child {
+    display: none !important;
+  }
+}

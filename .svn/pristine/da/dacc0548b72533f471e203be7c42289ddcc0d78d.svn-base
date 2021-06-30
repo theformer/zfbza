@@ -1,0 +1,142 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import { Toast, Button, WhiteSpace } from "antd-mobile";
+import "./index.scss";
+import { jump, setTitle, getHashUrlValue, back } from "../../utlis/utlis";
+import http from "../../utlis/http";
+
+const prefix = "visitor-detail";
+Toast.config({
+  mask: false,
+});
+class Index extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      type: 3,
+      data: null,
+    };
+  }
+  componentDidMount() {
+    // 修改mobx中存储的值
+    setTitle.call(this, "访客详情");
+    let id = getHashUrlValue("id");
+    console.log(id, "访客id");
+    if (id) {
+      this.getDetail(id);
+    }
+  }
+  getDetail(id) {
+    let data = {
+      id,
+    };
+    http
+      .get({
+        url: "/api/visitor/detail?id=" + data.id,
+      })
+      .then((res) => {
+        console.log(res, "获取访客详情");
+        const { data, code, message } = res.data;
+        if (code !== "1") {
+          Toast.fail(message);
+        }
+        this.setState({
+          data,
+        });
+      });
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, "/index");
+  }
+  goBack() {
+    // 返回
+    back.call(this);
+  }
+  //登记入住
+  changeCheckIn() {}
+  //访客登记
+  changeRegister() {}
+
+  render() {
+    // 从mobx中拿所需属性
+    const { data } = this.state;
+    return (
+      <div className={`${prefix} flex flex-column`}>
+        <div className={`${prefix}-box`}>
+          <div className={`${prefix}-box-head flex align-center`}>
+            <img
+              className={`${prefix}-box-head-photo`}
+              src={require("./../../assets/imgs/common/head_default@2x.png")}
+              alt=""
+            />
+            <div className={`${prefix}-box-head-detail flex flex-column`}>
+              <div className={`${prefix}-detail flex`}>
+                <span className={`${prefix}-detail-left`}>姓 名</span>
+                <span className={`${prefix}-detail-right`}>
+                  {data ? data.userName : "暂无数据"}
+                </span>
+              </div>
+              <div className={`${prefix}-detail flex`}>
+                <span className={`${prefix}-detail-left`}>手机号</span>
+                <span className={`${prefix}-detail-right`}>
+                  {data ? data.tel : "暂无数据"}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className={`${prefix}-main`}>
+            <div className={`${prefix}-main-col flex`}>
+              <span className={`${prefix}-main-col-left`}>车牌号</span>
+              <span className={`${prefix}-main-col-right`}>
+                {data ? data.carNumber : "暂无数据"}
+              </span>
+            </div>
+            <div className={`${prefix}-main-col flex`}>
+              <span className={`${prefix}-main-col-left`}>到访时间</span>
+              <span className={`${prefix}-main-col-right`}>
+                {data ? data.visitorBeginTime : "暂无数据"}
+              </span>
+            </div>
+            <div className={`${prefix}-main-col flex`}>
+              <span className={`${prefix}-main-col-left`}>审核状态</span>
+              {(() => {
+                if (this.state.checkStatus === "1") {
+                  return <span className={`${prefix}-pass`}>审核通过</span>;
+                } else if (this.state.checkStatus === "2") {
+                  return <span className={`${prefix}-nopass`}>审核不通过</span>;
+                } else {
+                  return <span className={`${prefix}-waitpass`}>待审核</span>;
+                }
+              })()}
+            </div>
+          </div>
+        </div>
+        <div>
+          {(() => {
+            if (this.state.type === 3) {
+              return (
+                <div className={`${prefix}-footer flex`}>
+                  <Button type="primary" className={`${prefix}-footer-left`}>
+                    不通过
+                  </Button>
+                  <Button type="primary" className={`${prefix}-footer-right`}>
+                    通过
+                  </Button>
+                </div>
+              );
+            } else {
+              return null;
+            }
+          })()}
+        </div>
+      </div>
+    );
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject("store")(observer(Index));

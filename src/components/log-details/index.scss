@@ -1,0 +1,31 @@
+$prefix: 'log-details';
+
+.#{$prefix} {
+  &-box {
+    padding: vw(32);
+    min-height: 100vh;
+    &-one {
+      padding-bottom: vw(21);
+      border-bottom: vw(2) solid #DFE3E8;
+    }
+    &-title {
+      margin-bottom: vw(28);
+      font-size: ft(44);
+      color: #2B333F;
+    }
+    &-date {
+      font-size: ft(24);
+      color: #AEB8C6;
+    }
+    &-word {
+      font-size: ft(34);
+      color: #2B333F;
+      margin: vw(32) 0;
+      line-height: vw(52);
+    }
+    &-icon {
+      width: vw(686);
+      height: vw(320);
+    }
+  }
+}

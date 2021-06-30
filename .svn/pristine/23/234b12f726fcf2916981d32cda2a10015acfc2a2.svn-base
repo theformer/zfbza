@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="format-detection" content="telephone=yes" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui,viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="frame-src *;" />
+  <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <title></title>
+  <style>
+    @font-face {
+      font-family: 'font-zzgf';
+      src: url('./font/zzgf.ttf') format('truetype');
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  <script>
+    window.setupWebViewJavascriptBridge = function (callback) {
+      if (window.WebViewJavascriptBridge) {
+        callback(WebViewJavascriptBridge)
+      } else {
+        document.addEventListener(
+          'WebViewJavascriptBridgeReady'
+          , function () {
+            callback(WebViewJavascriptBridge)
+          },
+          false
+        );
+      }
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if (isiOS) {
+        if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function () { document.documentElement.removeChild(WVJBIframe) }, 0)
+      }
+    }
+  </script>
+  <script type="text/javascript" src="https://appx/web-view.min.js"></script>
+  <!-- 支付宝jsapi -->
+  <script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.inc.min.js"></script>
+  <!-- 微信sdk -->
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+  <!-- 高德地图 -->
+  <script type="text/javascript"
+    src="https://webapi.amap.com/maps?v=1.4.15&key=e197bd5ce641722cd916caa3f5a79799"></script>
+  <!-- 浙里办jsapi -->
+  <script type="text/javascript" src="//assets.zjzwfw.gov.cn/assets/ZWJSBridge/1.0.1/zwjsbridge.js"></script>
+
+<script>
+  // window.my.postMessage({name:"测试web-view"})
+</script>
+  <!-- <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=acfcc9aed6a959262326b9fbb7e7ac59"></script>  -->
+  <!-- 埋点 -->
+  <script>
+      (function (w, d, s, q, i) {
+        w[q] = w[q] || [];
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s);
+        j.async = true;
+        j.id = 'beacon-aplus';
+        j.src = 'https://d.alicdn.com/alilog/mlog/aplus.js?id=202951085';
+        f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'aplus_queue');
+    //如果是私有云部署还需要在上面那段JS后面紧接着添加日志域名埋点
+    //通常私有云日志服务端域名类似于：quickaplus-web-api.xxx.com.cn，具体域名需找交付同学要
+
+    //日志采集地址（固定value）
+    aplus_queue.push({
+      action: 'aplus.setMetaInfo',
+      arguments: ['aplus-rhost-v', 'alog.zjzwfw.gov.cn']
+    });
+    // 日志采集地址（固定value）
+    aplus_queue.push({
+      action: 'aplus.setMetaInfo',
+      arguments: ['aplus-rhost-g', 'alog.zjzwfw.gov.cn']
+    });
+    // 这个会落到app_key字段上
+    // 浙里办appId（固定value）
+    aplus_queue.push({
+      action: 'aplus.setMetaInfo',
+      arguments: ['appId', '60506758']
+    });
+    aplus_queue.push({
+      action: 'aplus.setMetaInfo',
+      arguments: ['aplus-waiting', 'MAN']
+    })
+    aplus_queue.push({
+      'action': 'aplus.sendPV',
+      'arguments': [{
+        is_auto: false
+      },
+      {
+        //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+        miniAppId: '2001601131',
+        miniAppName: '智安小区助手'
+      }]
+    })
+    // aplus_queue.push({
+    //   action: 'aplus.setMetaInfo',
+    //   arguments: ['_hold', 'BLOCK']
+    // });
+    // console.log(aplus_queue)
+    window.ZWJSBridge.onReady(() => {
+      // let location = new Promise((resolve, reject) => {
+      //   window.ZWJSBridge.getLocation({}).then(res => {
+      //     console.log(res)
+      //     aplus_queue.push({
+      //       'action': 'aplus.sendPV',
+      //       'arguments': [{
+      //         is_auto: false
+      //       },
+      //       {
+      //         //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+      //         long: res.longitude,
+      //         lati: res.latitude,
+      //       }]
+      //     })
+      //     console.log(res)
+      //     resolve()
+      //   }).catch(err => {
+      //     console.log(err)
+      //     reject(err)
+      //   })
+      // })
+      // let userType = new Promise((resolve, reject) => {
+      //   window.ZWJSBridge.getUserType().then((res) => {
+      //     aplus_queue.push({
+      //       'action': 'aplus.sendPV',
+      //       'arguments': [{
+      //         is_auto: false
+      //       },
+      //       {
+      //         //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+      //         userType: res.userType
+      //       }]
+      //     })
+      //     console.log(res)
+      //     resolve()
+      //   }).catch((err) => {
+      //     console.log(err);
+      //     reject(err)
+      //   });
+      // })
+      // Promise.all([location, userType]).then(() => {
+      //   //此时被block住的日志会携带上用户信息逐条发出
+      //   aplus_queue.push({
+      //     action: 'aplus.setMetaInfo',
+      //     arguments: ['_hold', 'START']
+      //   });
+      // }).catch(err => {
+      //   console.log(err)
+      // })
+      window.ZWJSBridge.getLocation({}).then(res => {
+        console.log(res)
+        aplus_queue.push({
+          'action': 'aplus.sendPV',
+          'arguments': [{
+            is_auto: false
+          },
+          {
+            //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+            long: res.longitude,
+            lati: res.latitude,
+          }]
+        })
+        window.aplus_queue = aplus_queue
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      })
+      window.ZWJSBridge.getUserType().then((res) => {
+        aplus_queue.push({
+          'action': 'aplus.sendPV',
+          'arguments': [{
+            is_auto: false
+          },
+          {
+            //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+            userType: res.userType
+          }]
+        })
+        console.log(res)
+        window.aplus_queue = aplus_queue
+      }).catch((err) => {
+        console.log(err);
+      });
+    })
+  </script>
+
+</body>
+
+</html>

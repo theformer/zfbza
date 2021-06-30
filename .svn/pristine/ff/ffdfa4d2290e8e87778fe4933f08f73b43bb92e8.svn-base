@@ -1,0 +1,205 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast, DatePicker, Picker, List } from 'antd-mobile'
+import './index.scss'
+import { back, jump, setTitle, formatDate } from '../../utlis/utlis'
+import http from '../../utlis/http'
+
+const prefix = 'visitor-info'
+Toast.config({
+  mask: false
+})
+class VisitorInfo extends Component {
+  constructor(props) {
+    super(props)
+  }
+  state = {
+    visitorName: '',  // 被访人
+    visitorBeginTime: '',
+    visitorEndTime: '',
+    withCount: '',
+    carNumber: '',
+    carList: [
+      // {
+      //   label: '浙AAAAA',
+      //   value: '浙AAAAA'
+      // }
+    ],
+    registerSource: 0
+  }
+  componentDidMount() {
+    // 修改mobx中存储的值
+    setTitle.call(this, ' ')
+
+    // this.getCarList()
+  }
+  getCarList() {
+    http.get({
+      url: '/test/info/car/list?userId=2088022962017922',
+    }).then(res => {
+      console.log(res, 1111111);
+      // if (res.data.code != 1) {
+      //   Toast.info(res.data.message);
+      // }
+    })
+  }
+  checkStartDate(date) {
+    this.setState({
+      visitorBeginTime: date
+    })
+    if (this.state.visitorEndTime !== '') {
+      this.setState({
+        visitorEndTime: ''
+      })
+    }
+  }
+  checkEndDate(date) {
+    let startDateTemp = this.state.visitorBeginTime
+    if (!startDateTemp) {
+      Toast.fail('请选择开始时间')
+      return
+    }
+    let startTime = new Date(startDateTemp).getTime()
+    let endTime = new Date(date).getTime()
+    if (startTime > endTime) {
+      Toast.fail('租住开始时间不得大于结束时间')
+      return
+    }
+    this.setState({ visitorEndTime: date })
+  }
+  onVisitorName(e) {
+    this.setState({
+      visitorName: e.target.value
+    })
+  }
+  onWithCount(e) {
+    this.setState({
+      withCount: e.target.value
+    })
+  }
+  onCarNumber(e) {
+    this.setState({
+      carNumber: e.target.value
+    })
+  }
+  saveBtn() {
+    const data = {
+      visitorName: this.state.visitorName,
+      visitorBeginTime: formatDate(this.state.visitorBeginTime, 'YYYY-MM-DD hh:mm'),
+      visitorEndTime: formatDate(this.state.visitorEndTime, 'YYYY-MM-DD hh:mm'),
+      withCount: this.state.withCount ? this.state.withCount : 0,
+      carNumber: this.state.carNumber,
+      registerSource: this.state.registerSource
+    }
+    http.post({
+      url: '/test/visitor/save',
+      data
+    }).then(res => {
+      if (res.data.code != 1) {
+        Toast.info(res.data.message);
+      } else {
+        back.call(this)
+      }
+    })
+  }
+  render() {
+    const { value } = this.state
+    // 从mobx中拿所需属性
+    return (
+      <div className={`${prefix} flex flex-column`}>
+        <div className={`${prefix}-main`}>
+          <div className={`${prefix}-main-head`}>
+            访客信息
+          </div>
+          <div className={`${prefix}-head flex align-center`}>
+            <img src={require('./../../assets/imgs/common/Home_icon_community_d@2x.png')} className={`left-png`} alt="" />
+            <div className={`right-text`}>汇景家园</div>
+          </div>
+        </div>
+        <div>
+          <div className={`${prefix}-box padding-left32`}>
+            <span className={`box-title flex flex-column`}>被访人</span>
+            <input
+              placeholder='请填写访问的业主、楼栋、单元、房屋'
+              value={this.state.visitorName}
+              className={`${prefix}-form-name-ipt ipt-none name-card`}
+              onChange={this.onVisitorName.bind(this)} />
+          </div>
+          <div className={`${prefix}-container`}>
+            <div className={`${prefix}-container-title`}>到访时间</div>
+            <DatePicker
+              className="datePicker"
+              mode="datetime"
+              title="开始时间"
+              extra="请选择开始时间"
+              value={this.state.visitorBeginTime}
+              onChange={time => this.checkStartDate(time)}
+              format={'YYYY-MM-DD HH:mm'}
+            >
+              <List.Item arrow="horizontal">开始时间</List.Item>
+            </DatePicker>
+            <DatePicker
+              mode="datetime"
+              title="结束时间"
+              extra="请选择结束时间"
+              value={this.state.visitorEndTime}
+              onChange={time => this.checkEndDate(time)}
+              format={'YYYY-MM-DD HH:mm'}
+            >
+              <List.Item arrow="horizontal">结束时间</List.Item>
+            </DatePicker>
+          </div>
+          <div className={`${prefix}-box padding-left32`}>
+            <span className={`box-title flex flex-column`}>同行同伴</span>
+            <input
+              placeholder='请输入同伴数'
+              value={this.state.withCount}
+              className={`${prefix}-form-name-ipt ipt-none name-card`}
+              onChange={this.onWithCount.bind(this)} />
+          </div>
+          <div className={`${prefix}-box padding-left32`}>
+            <span className={`box-title flex flex-column`}>车辆(选填)</span>
+            <div className="flex dlex-column card-item">
+              <input
+                placeholder='请输入车牌号'
+                value={this.state.carNumber}
+                className={`${prefix}-form-name-ipt ipt-none name-card`}
+                onChange={this.onCarNumber.bind(this)} />
+              <Picker
+                data={this.state.carList}
+                cols={1}
+                onOk={v => {
+                  this.setState({
+                    carNumber: v[0]
+                  })
+                }}
+              >
+                <List.Item arrow="horizontal"></List.Item>
+              </Picker>
+            </div>
+          </div>
+        </div>
+        {
+          (() => {
+            const isSave = this.state.visitorName && this.state.visitorBeginTime && this.state.visitorEndTime
+            if (isSave) {
+              return <div className={`${prefix}-footer flex1 flex align-center`}>
+                <input type="button" className={'save-btn files-save-btn'} onClick={this.saveBtn.bind(this)} value="下一步" />
+              </div>
+            }
+            return <div className={`${prefix}-footer flex1 flex align-center`}>
+              <input type="button" className={'save-btn'} onClick={this.saveBtn.bind(this)} value="下一步" />
+            </div>
+          })()
+        }
+      </div>
+    )
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+  observer(VisitorInfo)
+)

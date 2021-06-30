@@ -1,0 +1,206 @@
+$prefix: 'login';
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  &-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  .agreement-dia{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .dia-matter{
+    width:vw(582);
+    height: vw(360);
+    position: fixed;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: #FFFFFF;
+    border-radius: vw(6);
+  }
+  .policy{
+    height: vw(788);
+  }
+  .matter-tips{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: vw(-0.82);
+    text-align: center;
+    //width: vw(486);
+    height: vw(48);
+    margin: vw(40) 0 0 0;
+  }
+  .matter-title{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.44);
+    text-align: justify;
+    line-height: vw(40);
+    padding:  vw(24) vw(48);
+  }
+  .matter-policy{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #255BDA;
+    letter-spacing: vw(-0.44);
+    text-align: justify;
+    line-height: vw(40);
+  }
+  .matter-agree{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.44);
+    text-align: justify;
+    line-height: vw(40);
+    padding:  0 vw(48) vw(34);
+  }
+  .matter-footer{
+
+  }
+  .matter-consent{
+    font-family: PingFangSC-Semibold;
+    font-size: ft(34);
+    color: #255BDA;
+    letter-spacing: vw(-0.57);
+    text-align: center;
+    line-height:vw(44);
+    height: vw(88);
+    border-top: 1px solid #DFE3E8;
+    padding: vw(24) 0 vw(22) 0;
+  }
+  .matter-unconsent{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #808DA1;
+    letter-spacing: vw(-0.82);
+    text-align: center;
+    line-height: vw(46);
+    height: vw(88);
+    border-top: 1px solid #DFE3E8;
+    padding: vw(22) 0 vw(20) 0;
+  }
+  .dia-head{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: vw(-0.82);
+    text-align: center;
+    margin:vw(40) vw(80);
+  }
+  .dia-content{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.44);
+    text-align: justify;
+    line-height: vw(40);
+    margin:vw(40) vw(48) vw(30) vw(48);
+  }
+  .dia-footer{
+    justify-content: space-around;
+    height: vw(88);
+    border-top: 1px #DFE3E8 solid;
+    .footer-left{
+      font-family: PingFangSC-Regular;
+      font-size: ft(34);
+      color: #808DA1;
+      letter-spacing: vw(-0.82);
+      text-align: center;
+      line-height: vw(46);
+      padding: vw(20) 0;
+    }
+    .footer-right{
+      font-family: PingFangSC-Semibold;
+      font-size: ft(34);
+      color: #255BDA;
+      letter-spacing: vw(-0.82);
+      text-align: center;
+      line-height: vw(46);
+      font-weight: bold;
+      padding: vw(20) 0;
+    }
+  }
+}
+.#{$prefix}-header {
+  font-family: PingFangSC-Medium;
+  font-size: ft(34);
+  color: #16181C;
+  letter-spacing: 0;
+  text-align: center;
+  margin-top: vw(20);
+}
+.#{$prefix}-main-logoText{
+  font-family: PingFangSC-Medium;
+  font-size: ft(32);
+  color: #2B333F;
+  letter-spacing: 0;
+  line-height: ft(40);
+  text-align: center;
+  margin-bottom: vw(48);
+}
+.#{$prefix}-main-logo-style{
+  background: #004285;
+  border: none;
+  border-radius: vw(54);
+  width: vw(200);
+  height: vw(200);
+  margin: vw(124) auto vw(32) auto;
+}
+.#{$prefix}-main-footer{
+  z-index: 10;
+  //text-align: center;
+}
+.#{$prefix}-main-footer-checkOut{
+  //background: rgba(0, 0, 0, 0.3);
+  background: #00B578;
+  border-radius: vw(8);
+  width: vw(686);
+  height: vw(96);
+  font-family: PingFangSC-Regular;
+  font-size: ft(34);
+  color: #FFFFFF;
+  letter-spacing: 0;
+  margin: 0 auto;
+}
+.btn-top-png{
+  width: vw(36);
+  height: vw(36);
+}
+.btn-bottom-png{
+  width: vw(40);
+  height: vw(34);
+}
+.#{$prefix}-main-footer-checkIn{
+  background: #255BDA;
+  border-radius: vw(8);
+  width: vw(686);
+  height: vw(96);
+  margin-bottom: vw(32);
+  font-family: PingFangSC-Regular;
+  font-size: ft(34);
+  color: #FFFFFF;
+  letter-spacing: 0;
+  margin: 0 auto 4.26667vw;
+}
+.#{$prefix}-main-footer-btmPng{
+  width: vw(750);
+  height: vw(580);
+
+}

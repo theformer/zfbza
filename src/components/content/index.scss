@@ -1,0 +1,59 @@
+$prefix: 'content';
+
+.#{$prefix} {
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  &-content {
+    padding: vw(32);
+    min-height: 100vh;
+    position: relative;
+  }
+  &-mes-title {
+    font-size: ft(44);
+    color: #2B333F;
+  }
+
+  &-title {
+    padding: vw(20) 0;
+    color: #808DA1;
+    border-bottom: vw(2) solid#E3E4E4;;
+    margin-bottom: vw(32);
+  }
+  &-title-city {
+    font-size: ft(24);
+    margin-right: vw(40);
+  }
+  &-title-date {
+    font-size: ft(24);
+  }
+  &-word {
+    font-size: ft(34);
+    color: #2B333F;
+    margin: vw(32) 0;
+  }
+  &-list-img {
+    width: 100%;
+    height: vw(320);
+    margin-bottom: vw(32);
+    border: none !important;
+  }
+  &-two-word {
+    font-size: ft(34);
+    color: #2B333F;
+    margin-bottom: vw(60);
+  }
+  &-footer {
+    font-size: ft(24);
+    color: #999999;
+    position: absolute;
+    bottom: 0;
+    width: vw(686);
+    padding: vw(32) 0;
+  }
+  &-footer-number {
+    float: right;
+  }
+}
+.mt-bom{
+  margin-bottom: vw(36);
+}

@@ -1,0 +1,25 @@
+$prefix:'editor';
+.#{$prefix}{
+    width: 100%;
+    .text-area{
+        padding: 0 vw(30);
+        background-color: #fff;
+        margin-top: vw(30);
+    }
+    .editorElem-body{
+        background-color: #fff;
+        // min-height: vw(300);
+        font-size: vw(32);
+    }
+    .editorElem-menu{
+        margin-top: vw(20);
+        height: fit-content;
+        img{
+            width: vw(192);
+            height: vw(180);
+        }
+    }
+    // .w-e-text-container{
+    //     min-height: vw(300);
+    // }
+}

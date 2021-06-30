@@ -1,0 +1,128 @@
+$prefix: 'message-list';
+
+.#{$prefix} {
+  min-height: 100vh;
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  .am-list-view-scrollview{
+    height: 100%;
+  }
+  &-bg{
+    padding-top: vw(20);
+    background: #f2f5f8;
+
+  }
+  &-min-height-left{
+    //height: 100%;
+  }
+  &-min-height-right{
+    //height: 100%;
+  }
+  .am-tabs-tab-bar-wrap{
+    min-height: vw(96);
+  }
+  &-list{
+    //height: vw(230);
+    //padding: vw(16) 0;
+    background: #FFFFFF;
+    &-head{
+      position: relative;
+      &-photo{
+        position: absolute;
+        background: #E63633;
+        border: 0 solid #FFFFFF;
+        width: vw(16);
+        height: vw(16);
+        border-radius: 50%;
+        left: vw(32);
+        top: 53%;
+      }
+    }
+
+  }
+  .head-litter{
+    margin-left: vw(64);
+  }
+  &-list-line{
+    background: #f2f5f8;
+    width: vw(750);
+    height: vw(16);
+  }
+  &-list-header{
+    font-family: PingFangSC-Medium;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: left;
+    margin: vw(32) vw(32) vw(16) vw(32);
+    display: block;
+  }
+  &-list-title{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: justify;
+    margin: 0 vw(32) vw(16) vw(32);
+  }
+  &-list-time{
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #AEB8C6;
+    letter-spacing: 0;
+    margin: 0 0 vw(32) vw(32);
+  }
+
+  &-height{
+    height: 100vh;
+    position: relative;
+    background: #f4f7f9;
+  }
+  //&-min-height{
+  //  height: 100%;
+  //}
+  .am-tabs-default-bar-top .am-tabs-default-bar-content{
+    width: 100% !important;
+  }
+  .am-tabs-default-bar-tab{
+    height: 100%;
+  }
+  .am-tabs-default-bar-underline{
+    border: 1px solid #255BDA;
+  }
+  .am-tabs-default-bar-tab{
+    font-family: PingFangSC-Regular;
+    color: #2B333F;
+    font-size: ft(30);
+    letter-spacing: vw(-0.48);
+    text-align: center;
+    line-height: vw(40);
+    height: 100%;
+  }
+
+  .am-tabs-default-bar-tab-active {
+    color: #255BDA;
+    font-family: PingFangSC-Medium;
+    font-size: ft(30);
+    letter-spacing: vw(-0.48);
+    text-align: center;
+    line-height: vw(40);
+    height: 100%;
+  }
+  .am-list-header{
+    padding: 0;
+  }
+  .am-tabs-default-bar-tab .am-badge .am-badge-dot {
+    top: vw(-2);
+    right: 0;
+    transform: translate(50%, 0%);
+  }
+  #m-tabs-0-0{
+    height: 100%;
+  }
+  #m-tabs-0-1{
+    height: 100%;
+  }
+}
+
+

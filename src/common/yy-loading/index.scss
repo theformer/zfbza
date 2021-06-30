@@ -1,0 +1,24 @@
+$prefix: 'yy-loading';
+@keyframes imgRotate{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.#{$prefix} {
+    &-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+    }
+    &-img {
+        transform: rotate(360deg);
+        animation: imgRotate 1s cubic-bezier(0.39, 0.575, 0.565, 1) infinite;
+    }
+    &-title {
+        color: #8e8e93;
+        font-size: .28rem;
+        margin-top: .2rem;
+    }
+}

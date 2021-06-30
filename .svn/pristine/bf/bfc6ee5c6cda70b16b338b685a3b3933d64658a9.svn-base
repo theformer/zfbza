@@ -1,0 +1,676 @@
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import { Toast, PullToRefresh, ListView, Tabs } from "antd-mobile";
+import {
+  Activate,
+  Deactivate,
+  Release,
+  Finish,
+} from "common/yy-refresh-indiccator";
+import "./index.scss";
+import {back, pxTovw, jump, setTitle, getStorage, setStorage, ftTovw} from "../../utlis/utlis";
+import http from "../../utlis/http";
+import NowTime from "../../common/now-time";
+import QRCode from "qrcodejs2";
+import { Control } from "react-keeper";
+import { EmptyPage } from "../../common/empty-page/index";
+
+const prefix = "wenzhou-healthy";
+let dateTime = new Date();
+Toast.config({
+  mask: false,
+});
+
+// window.addEventListener(
+//   "pageshow",
+//   function (event) {
+//     if (
+//       event.persisted ||
+//       (window.performance && window.performance.navigation.type == 2)
+//     ) {
+//       console.log(
+//         "window.performance.navigation.type: " +
+//           window.performance.navigation.type
+//       );
+//       // location.refresh();   //此处可以写你的实际应用的代码
+//       Control.go(-1);
+//     }
+//   },
+//   false
+// );
+class WenZhouHealthy extends Component {
+  constructor(props) {
+    super(props);
+    this.store = this.props.store.testStore;
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2, // rowHasChanged(prevRowData, nextRowData); 用其进行数据变更的比较
+    });
+    this.state = {
+      dateTime: dateTime.toLocaleDateString().replace(/\//gi, "-"),
+      tabs: [{ title: "访客码" }, { title: "健康码" }],
+      dataSource,
+      recordList: [],
+      pageCount: 1,
+      pageSize: 10,
+      hasMore: true,
+      refreshing: true,
+      isLoading: false,
+      hasNextPage: true,
+      recordTitle: true,
+      status: 0,
+      QRCode: "",
+      codeType: "",
+      healthyName: "",
+      healthyCode: false,
+      QRCode1: "",
+      codeType1: "",
+    };
+  }
+
+  async componentDidMount() {
+    // 修改mobx中存储的值
+    setTitle.call(this, "我的码");
+    this.store.name = "name";
+
+    await getStorage('zjuserid',res=>{
+      this.setState({
+        userId:res
+      })
+    })
+    this.getRecordList(true);
+    this.healthCodeQuery();
+    this.believeCodeQuery();
+  }
+  changeRecord(status) {
+    if (status === 0) {
+      this.setState(
+        {
+          recordTitle: true,
+          recordList: [],
+          status,
+        },
+        () => {
+          this.onRefresh();
+        }
+      );
+    } else {
+      this.setState(
+        {
+          recordTitle: false,
+          recordList: [],
+          status,
+        },
+        () => {
+          this.onRefresh();
+        }
+      );
+    }
+  }
+  getRecordList(ref = false) {
+    let data = {
+      // userId: localStorage.getItem("zjuserid"),
+      userId: this.state.userId,
+      status: this.state.status,
+      pageCount: this.state.pageCount,
+      pageSize: this.state.pageSize,
+    };
+    http
+      .get({
+        url:
+          "api/visitor/list?userId=" +
+          data.userId +
+          "&status=" +
+          data.status +
+          "&pageCount=" +
+          data.pageCount +
+          "&pageSize=" +
+          data.pageSize,
+      })
+      .then((res) => {
+        console.log(res, "获取访客返回的参数");
+        const { code, message, data } = res.data;
+        const dataList = data.array;
+        console.log(dataList);
+        const len = dataList.length ? dataList.length : 0;
+
+        if (len <= 0 || code !== "1") {
+          // 判断是否已经没有数据了
+          this.setState({
+            refreshing: false,
+            isLoading: false,
+            hasMore: false,
+          });
+
+          Toast.info("没有数据了~", 1);
+          return false;
+        }
+
+        if (ref) {
+          //这里表示刷新使用
+          // 下拉刷新的情况，重新添加数据即可(这里等于只直接用了第一页的数据)
+          this.setState({
+            pageCount: this.state.pageCount,
+            hasMore: true, // 下拉刷新后，重新允许开下拉加载
+            refreshing: false, // 是否在刷新数据
+            isLoading: false, // 是否在加载中
+            recordList: dataList, // 保存数据进state，在下拉加载时需要使用已有数据
+          });
+        } else {
+          // 这里表示上拉加载更多
+          // 合并state中已有的数据和新增的数据
+          var recordList = this.state.recordList.concat(dataList); //关键代码
+          this.setState({
+            pageCount: this.state.pageCount,
+            refreshing: false,
+            isLoading: false,
+            recordList: recordList, // 保存新数据进state
+          });
+        }
+
+        // this.setLoaded();
+
+        console.log(this.state.recordList, "recordList");
+      })
+      .catch((err) => {
+        // Toast.fail(err.ret[0]);
+        console.log(err);
+      });
+  }
+  // 下拉刷新
+  onRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+        isLoading: true,
+        pageCount: 1, // 刷新嘛，一般加载第一页，或者按你自己的逻辑（比如每次刷新，换一个随机页码）
+      },
+      () => {
+        this.getRecordList(true);
+      }
+    );
+  };
+
+  // 滑动到底部时加载更多
+  onEndReached = (event) => {
+    // 加载中或没有数据了都不再加载
+    if (this.state.isLoading || !this.state.hasMore) {
+      return;
+    }
+    this.setState(
+      {
+        isLoading: true,
+        pageCount: this.state.pageCount + 1, // 加载下一页
+      },
+      () => {
+        this.getRecordList(false);
+      }
+    );
+  };
+
+  //调取可信身份证
+  believeCodeQuery() {
+    let userId
+    getStorage('zjuserid',res=>{
+      userId = res
+    })
+    let data = {
+      userId: userId,
+    };
+    http
+      .get({
+        url: "/test/zlb/qrCode/create?userId=" + this.state.userId,
+      })
+      .then((res) => {
+        if (res.data.code == 1) {
+          this.setState({
+            QRCode1: res.data.data.qrCode, //二维码
+            codeType1: res.data.data.level, //健康码颜色
+          });
+          this.drawCode1();
+        }
+      });
+  }
+
+  drawCode1() {
+    // Toast.loading()
+    // if()
+    const QRCode = require("qrcodejs2");
+    var qrcode = new QRCode("qrcode", {
+      text: this.state.QRCode1,
+      width: (180 / 375) * document.documentElement.clientWidth,
+      height: (180 / 375) * document.documentElement.clientWidth,
+      padding: 0, // 生成二维码四周自动留边宽度，不传入默认为0
+      correctLevel: QRCode.CorrectLevel.L, // 二维码可辨识度
+      colorDark:
+        this.state.codeType1 == "green"
+          ? "#3DA93D"
+          : this.state.codeType1 == "red"
+          ? "#DC143C"
+          : this.state.codeType1 == "yellow"
+          ? "#FCC20B"
+          : "#000",
+      colorLight: "#ffffff",
+      callback: (res) => {
+        this.setState({
+          codeImg1: res.path,
+        });
+      },
+    });
+  }
+
+  //调取健康码
+  healthCodeQuery() {
+
+    let data = {
+      userId: this.state.userId,
+      source: "ZLB",
+    };
+    http
+      .get({
+        url: "/test/user/health/code/query?userId=" +
+          data.userId +
+          "&source=" +
+          data.source,
+      })
+      .then((res) => {
+        if (res.data.code == 1) {
+          this.setState(
+            {
+              QRCode: res.data.data.qrCode, //二维码
+              codeType: res.data.data.level, //健康码颜色
+              healthyName: res.data.data.name,
+              healthyCode: true,
+            },
+            () => {
+              this.drawCode();
+            }
+          );
+        } else {
+          this.setState({
+            healthyCode: false,
+          });
+        }
+      });
+  }
+
+  drawCode() {
+    const QRCode = require("qrcodejs2");
+    var qrcode = new QRCode("qrcode2", {
+      text: this.state.QRCode,
+      width: (180 / 375) * document.documentElement.clientWidth,
+      height: (180 / 375) * document.documentElement.clientWidth,
+      padding: 0, // 生成二维码四周自动留边宽度，不传入默认为0
+      correctLevel: QRCode.CorrectLevel.L, // 二维码可辨识度
+      colorDark:
+        this.state.codeType == "green"
+          ? "#3DA93D"
+          : this.state.codeType == "red"
+          ? "#DC143C"
+          : this.state.codeType == "yellow"
+          ? "#FCC20B"
+          : "#000",
+      colorLight: "#ffffff",
+      callback: (res) => {
+        // Toast.hide()
+        this.setState({
+          codeImg: res.path,
+        });
+      },
+    });
+  }
+  toRecordDetail(row) {
+    console.log(row, "跳转到拜访详情");
+    jump.call(this, "/visitor-detail?id=" + row.id+'&time=1');
+  }
+  toIndex() {
+    // 跳转
+    jump.call(this, "/index");
+  }
+  goBack() {
+    // 返回
+    back.call(this);
+  }
+  render() {
+    // 从mobx中拿所需属性
+    const {
+      tabs,
+      isLoading,
+      recordList,
+      refreshing,
+      dataSource,
+      hasNextPage,
+      recordTitle,
+      status,
+      healthyCode,
+    } = this.state;
+    const row = (rowData) => {
+      return (
+        <React.Fragment>
+          {(() => {
+            if (recordTitle && status === 0) {
+              return (
+                <div className={`${prefix}-record-item`}>
+                  <div className={`${prefix}-record-itemlist`}>
+                    <div
+                      className={`${prefix}-record-item-list`}
+                      style={{ alignItems: "flex-start" }}
+                    >
+                      <div className={`${prefix}-list-left`}>
+                        {/*<img*/}
+                        {/*  className={`${prefix}-img`}*/}
+                        {/*  src={rowData.imageUrl}*/}
+                        {/*/>*/}
+                        <div className={`${prefix}-list-left-photo`}>{rowData.userName}</div>
+
+                      </div>
+                      <div className={`${prefix}-list-right`}>
+                        <div className={`${prefix}-list-right-left`}>
+                          <div className={`${prefix}-list-right-left-top`}>
+                            <span>
+                              {rowData.userName ? rowData.userName : "暂无数据"}
+                            </span>
+                            <span
+                              className={
+                                rowData.checkStatus === "0"
+                                  ? "soonPast"
+                                  : rowData.checkStatus === "1"
+                                  ? "hasPast"
+                                  : rowData.checkStatus === "2"
+                                  ? "noPast"
+                                  : "guoqi"
+                              }
+                            >
+                              {rowData.checkStatus === "0"
+                                ? "待审核"
+                                : rowData.checkStatus === "1"
+                                ? "已审核"
+                                : rowData.checkStatus === "0"
+                                ? "审核未通过"
+                                : "过期"}
+                            </span>
+                          </div>
+                          <div className={`${prefix}-list-right-left-btm`}>
+                            <span>
+                              {rowData.houseName
+                                ? rowData.houseName
+                                : "暂无数据"}
+                            </span>
+                          </div>
+                          <div className={`${prefix}-list-right-left-btm`}>
+                            <span>
+                              {rowData.visitorBeginTime
+                                ? rowData.visitorBeginTime
+                                : "暂无数据"}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`${prefix}-list-right-right`}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            } else {
+              return (
+                <div className={`${prefix}-record-item`}>
+                  <div className={`${prefix}-record-item-time`}>
+                    {rowData.createTime}
+                  </div>
+                  <div className={`${prefix}-record-itemlist`}>
+                    {rowData.dataArray &&
+                      rowData.dataArray.map((el, index) => {
+                        return (
+                          <div
+                            className={`${prefix}-record-item-list`}
+                            key={index}
+                            onClick={() => {
+                              this.toRecordDetail(el);
+                            }}
+                          >
+                            <div className={`${prefix}-list-left`}>
+                              {/*<img*/}
+                              {/*  className={`${prefix}-img`}*/}
+                              {/*  src={el.imageUrl}*/}
+                              {/*/>*/}
+                              <div className={`${prefix}-list-left-photo`}>{el.userName}</div>
+                            </div>
+                            <div
+                              className={`${prefix}-list-right ${
+                                rowData.dataArray.length - 1 === index
+                                  ? ``
+                                  : `${prefix}-border-btm`
+                              }`}
+                            >
+                              <div className={`${prefix}-list-right-left`}>
+                                <div
+                                  className={`${prefix}-list-right-left-top`}
+                                >
+                                  <span>
+                                    {el.userName
+                                      ? el.userName
+                                      : "暂无数据"}
+                                  </span>
+                                  <span
+                                      className={
+                                        el.checkStatus === "0"
+                                            ? "soonPast"
+                                            : el.checkStatus === "1"
+                                            ? "hasPast"
+                                            : el.checkStatus === "2"
+                                                ? "noPast"
+                                                : "guoqi"
+                                      }
+                                  >
+                              {el.checkStatus === "0"
+                                  ? "待审核"
+                                  : el.checkStatus === "1"
+                                      ? "已审核"
+                                      : el.checkStatus === "0"
+                                          ? "审核未通过"
+                                          : "过期"}
+                            </span>
+                                </div>
+                                <div
+                                  className={`${prefix}-list-right-left-btm`}
+                                >
+                                  <span>
+                                    {el.houseName ? el.houseName : "暂无数据"}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className={`${prefix}-list-right-right`}>
+                                <img
+                                  className={`${prefix}-img`}
+                                  src={require("../../assets/imgs/house/next@xhdpi.png")}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              );
+            }
+          })()}
+        </React.Fragment>
+      );
+    };
+    return (
+      <Tabs
+        tabs={tabs}
+        tabBarActiveTextColor="#255BDA"
+        tabBarUnderlineStyle={{ border: "1px #255BDA solid" }}
+        tabBarTextStyle={{
+          fontFamily: "PingFangSC - Medium",
+          fontSize: "15px",
+          letterSpacing: "-0.24px",
+          textAlign: "center",
+          lineHeight: "20px",
+        }}
+      >
+        <div className={`${prefix}`}>
+          <div className={`${prefix}-main`}>
+            <div className={`${prefix}-main-head`}>
+              <NowTime></NowTime>
+            </div>
+            <div className={`${prefix}-main-code`}>
+              <div
+                className={`${prefix}-main-code-healthy`}
+                id="qrcode"
+                ref="qrcode"
+              ></div>
+
+              <div className={`${prefix}-name`}>
+                <span className={`${prefix}-name-block`}>
+                 （亦是可信身份码）
+                </span>
+              </div>
+            </div>
+            <div className={`${prefix}-footer`}>
+              <img
+                className={`${prefix}-footer-png`}
+                src={require("./../../assets/imgs/healthy/prompt@2x.png")}
+                alt=""
+              />
+              <span className={`${prefix}-footer-text`}>
+                开通访客功能的小区，业主可分享此码邀请访客；若该小区有设备支持，可用此码刷码开门。
+              </span>
+            </div>
+          </div>
+          <div className={`${prefix}-record`}>
+            <div className={`${prefix}-record-title`}>
+              <span
+                onClick={this.changeRecord.bind(this, 0)}
+                className={recordTitle ? "blue" : ""}
+              >
+                我的行程
+              </span>
+              <span
+                onClick={this.changeRecord.bind(this, 1)}
+                className={recordTitle ? "" : "blue"}
+              >
+                拜访记录
+              </span>
+            </div>
+            <div className={`${prefix}-recordlist`}>
+              <ListView
+                ref={(el) => (this.lv = el)}
+                dataSource={dataSource.cloneWithRows(recordList)}
+                renderFooter={() => (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      paddingBottom: pxTovw(0),
+                    }}
+                  >
+                    {isLoading
+                      ? "加载中..."
+                      : recordList && recordList.length > 0 && !hasNextPage
+                      ? "没有更多了~"
+                      : ""}
+                  </div>
+                )}
+                renderRow={row}
+                className="am-list"
+                pageSize={this.state.pageSize}
+                scrollRenderAheadDistance={500}
+                onEndReached={this.onEndReached}
+                onEndReachedThreshold={10}
+                style={{
+                  height: "100%",
+                }}
+                pullToRefresh={
+                  <PullToRefresh
+                    damping={pxTovw(120)}
+                    ref={(el) => (this.ptr = el)}
+                    refreshing={refreshing}
+                    onRefresh={this.onRefresh}
+                    distanceToRefresh={parseFloat(
+                      document.documentElement.style.fontSize
+                    )}
+                    indicator={{
+                      activate: <Activate />,
+                      deactivate: <Deactivate />,
+                      release: <Release />,
+                      finish: <Finish />,
+                    }}
+                  ></PullToRefresh>
+                }
+              />
+            </div>
+            {
+
+              (!recordList|| recordList.length <= 0) ? (
+                  <div className={`flex flex-center align-center flex-column color-999`} style={{ fontSize: ftTovw(28), height: '100%', paddingBottom: pxTovw(100), paddingTop: pxTovw(100) }}>
+                    <img src={require('assets/imgs/common/blank.png')} style={{ width: '50', height: pxTovw(170) }} alt="暂无数据" />
+                    <div className="size28">暂无数据</div>
+                  </div>
+              ) : null
+            }
+          </div>
+        </div>
+
+        <div className={`${prefix}`}>
+          <div className={`${prefix}-main`}>
+            <div className={`${prefix}-main-head`}>
+              <NowTime></NowTime>
+            </div>
+            <div className={`${prefix}-main-code`}>
+              {(() => {
+                if (healthyCode) {
+                  return (
+                    <div
+                      className={`${prefix}-main-code-healthy`}
+                      id="qrcode2"
+                      ref="qrcode2"
+                    ></div>
+                  );
+                } else {
+                  return (
+                    <img
+                      className={`${prefix}-main-code-healthy`}
+                      src={require("../../assets/imgs/common/erweima_code.png")}
+                    ></img>
+                  );
+                }
+              })()}
+              <div className={`${prefix}-name`}>
+                <span className={`${prefix}-name-block`}>
+                  {this.state.healthyName}
+                </span>
+              </div>
+            </div>
+            <div className={`${prefix}-footer`}>
+              <img
+                className={`${prefix}-footer-png`}
+                src={require("./../../assets/imgs/healthy/prompt@2x.png")}
+                alt=""
+              />
+              <span className={`${prefix}-footer-text`}>
+                绿码：凭此码可在浙江省范围内，请主动出示，配合检查；并做好自身防护工作，码颜色将根据您的申报由当地政府按照相关政策动态更新，出行前请仔细检查您的健康码
+              </span>
+            </div>
+          </div>
+          <div className={`${prefix}-phone`}>
+            <div className={`${prefix}-phone-info`}>
+              <img
+                className={`${prefix}-phone-png`}
+                src={require("./../../assets/imgs/healthy/phone@2x.png")}
+                alt=""
+              />
+              <span className={`${prefix}-phone-text`}>
+                服务热线: 0577-12345
+              </span>
+            </div>
+            <span className={`${prefix}-phone-eg`}>
+              - 本服务由当地人民政府提供 -
+            </span>
+          </div>
+        </div>
+      </Tabs>
+    );
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject("store")(observer(WenZhouHealthy));

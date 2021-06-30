@@ -1,0 +1,391 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import { Toast, List, Tabs, Badge, Button } from "antd-mobile";
+import "./index.scss";
+import { setTitle, back, jump } from "../../utlis/utlis";
+import http from "../../utlis/http";
+import { EmptyPage } from "../../common/empty-page/index";
+
+const Item = List.Item;
+// const Brief = Item.Brief;
+
+const prefix = "e-home";
+Toast.config({
+  mask: false,
+});
+const tabs = [
+  // { title: <Badge dot>访客管理</Badge> },
+  { title: "访客管理" },
+  { title: "我的家人" },
+];
+class Index extends Component {
+  constructor(props) {
+    super(props);
+  }
+  state = {
+    // a: [
+    //   {
+    //     name: '刘某',
+    //     title: '水景苑-1-A-201新增业主王某人，联系电话19957708465', state: 1,
+    //     time: '2020-12-20  09:30-16:45'
+    //   }
+    // ],
+    a: [],
+    homePerson: [],
+    tabIndex: 1,
+    showBtn: true,
+  };
+  componentDidMount() {
+    setTitle.call(this, "我的e家");
+    this.getHomePerson();
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, "/index");
+  }
+  goBack() {
+    // 返回
+    back.call(this);
+  }
+  //访客管理数据来源
+  getBtnCount() {
+    this.setState({
+      a: [],
+    });
+  }
+  //我的家人数据来源
+  getHomePerson() {
+    let complexCode = localStorage.getItem("complexCode");
+    let data = {
+      complexCode: complexCode,
+      userId: localStorage.getItem("zjuserid"),
+    };
+    http
+      .post({
+        api: "mgop.yykj.community.myFamilyUsers",
+        data,
+      })
+      .then((res) => {
+        console.log(res, "获取到的e家数据");
+        const { code, message, data } = res.data;
+        if (code !== "1") {
+          Toast.fail(message ? message : "获取到的e家数据失败");
+          return;
+        }
+        if (data) {
+          this.setState({
+            homePerson: data,
+            // showBtn: data.isHouseholder === '1' ? true : false
+          });
+        }
+      })
+      .catch((err) => {
+        Toast.fail("服务器连接失败");
+      });
+  }
+  // 跳转到新增成员
+  toAddPoep() {
+    jump.call(this, "/myhouse?showBtn=no");
+  }
+  // 跳转到用户详情
+  toMenberDetail(i) {
+    console.log(i.userId, "跳转到用户详情数据");
+    jump.call(this, "/member-detail/" + i.userId);
+  }
+  render() {
+    // 从mobx中拿所需属性
+    const { showBtn } = this.state;
+    return (
+      <div className={`${prefix} flex flex-column`}>
+        {/*<div className={`${prefix}-bg`}></div>*/}
+        <div className={`${prefix}-width`}>
+          <Tabs
+            tabs={tabs}
+            initialPage={1}
+            onChange={(tab, index) => {
+              this.setState({
+                tabIndex: index,
+              });
+              console.log("onChange", index, tab);
+            }}
+            onTabClick={(tab, index) => {
+              console.log("onTabClick", index, tab);
+            }}
+          >
+            <div style={{ height: "100vh", position: "relative" }}>
+              <div>
+                {(() => {
+                  if (this.state.a.length < 1) {
+                    return (
+                      <EmptyPage
+                        content={"快来添加您的访客吧~"}
+                        imgUrl={require("../../assets/imgs/car-empty.png")}
+                      ></EmptyPage>
+                    );
+                  }
+                })()}
+              </div>
+              <div>
+                {this.state.a.map((item, index) => {
+                  return (
+                    <div className={`flex flex-column`} key={index}>
+                      <div className={`${prefix}-bg`}></div>
+                      <div className={`${prefix}-list flex`}>
+                        <div className={`${prefix}-main`}>
+                          <img
+                            className={`${prefix}-list-title`}
+                            src={require("./../../assets/imgs/homepage/house_icon_registered_d.png")}
+                            alt=""
+                          />
+                          <div
+                            className={`${prefix}-list-right flex flex-column`}
+                          >
+                            <div className={`${prefix}-list-right-head`}>
+                              <span
+                                className={`${prefix}-list-right-head-name`}
+                              >
+                                {item.name}
+                              </span>
+                              {(() => {
+                                if (item.state === 1) {
+                                  return (
+                                    <div
+                                      className={`${prefix}-list-right-head-state pass-audit`}
+                                    >
+                                      <span>已审核</span>
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div
+                                    className={`${prefix}-list-right-head-state wait-audit`}
+                                  >
+                                    <span>待审核</span>
+                                  </div>
+                                );
+                              })()}
+                              {/*<span className={`${prefix}-list-right-head-state`}>{item.state}</span>*/}
+                            </div>
+                            <span className={`${prefix}-list-right-time`}>
+                              {item.tel}
+                            </span>
+                          </div>
+                        </div>
+                        <img
+                          className={`${prefix}-img`}
+                          src={require("./../../assets/imgs/common/next@2x.png")}
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div style={{ height: "100vh", position: "relative" }}>
+              <div>
+                {(() => {
+                  if (this.state.homePerson.length < 1) {
+                    return (
+                      <EmptyPage
+                        content={"快来添加您的家人吧~"}
+                        imgUrl={require("../../assets/imgs/car-empty.png")}
+                      ></EmptyPage>
+                    );
+                  }
+                })()}
+              </div>
+              <div>
+                {this.state.homePerson.map((item, index) => {
+                  if (item.userArray.length > 0) {
+                    return item.userArray.map((i, n) => {
+                      return (
+                        <div className={`flex flex-column`} key={n}>
+                          <div>
+                            {(() => {
+                              if (n >= 1) {
+                                return null;
+                              }
+                              return (
+                                <div className={`${prefix}-home flex`}>
+                                  <img
+                                    className={`${prefix}-home-img`}
+                                    src={require("./../../assets/imgs/common/Home_icon_community_d@2x.png")}
+                                    alt=""
+                                  />
+                                  <div className={`${prefix}-home-house`}>
+                                    {item.complexName} {item.buildingName}
+                                    {item.unitName}
+                                    {item.houseName}
+                                  </div>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                          <div>
+                            {(() => {
+                              if (n >= 1) {
+                                return <div className={`${prefix}-bg`}></div>;
+                              }
+                              return null;
+                            })()}
+                          </div>
+                          <div
+                            className={`${prefix}-main`}
+                            onClick={this.toMenberDetail.bind(this, i)}
+                          >
+                            <div className={`${prefix}-main `}>
+                              <img
+                                className={`${prefix}-list-title-home`}
+                                src={require("./../../assets/imgs/homepage/house_icon_registered_d.png")}
+                                alt=""
+                              />
+                            </div>
+                            <div
+                              className={`${prefix}-right flex1 ${
+                                i.passage.length > 0 ? `border-btm` : ``
+                              }`}
+                            >
+                              <div
+                                className={`${prefix}-list-right flex flex-column`}
+                              >
+                                <div className={`${prefix}-list-right-head`}>
+                                  <span
+                                    className={`${prefix}-list-right-head-name`}
+                                  >
+                                    {i.userName}
+                                  </span>
+                                  {(() => {
+                                    if (i.checkStatus === "WY200") {
+                                      return (
+                                        <div
+                                          className={`${prefix}-list-right-head-state pass-audit`}
+                                        >
+                                          <span>已审核</span>
+                                        </div>
+                                      );
+                                    } else if (i.checkStatus === "CS200") {
+                                      return (
+                                        <div
+                                          className={`${prefix}-list-right-head-state wait-audit`}
+                                        >
+                                          <span>待审核</span>
+                                        </div>
+                                      );
+                                    } else if (i.checkStatus === "WY500") {
+                                      return (
+                                        <div
+                                          className={`${prefix}-list-right-head-state nopass-audit`}
+                                        >
+                                          <span>未通过</span>
+                                        </div>
+                                      );
+                                    } else {
+                                      return (
+                                        <div
+                                          className={`${prefix}-list-right-head-state nopass-audit`}
+                                        >
+                                          <span>审核异常</span>
+                                        </div>
+                                      );
+                                    }
+                                  })()}
+                                  {/* <span className={`${prefix}-list-right-head-state`}>{item.state}</span> */}
+                                </div>
+                                <span className={`${prefix}-list-right-time`}>
+                                  {i.tel}
+                                </span>
+                              </div>
+                              <img
+                                className={`${prefix}-img`}
+                                src={require("./../../assets/imgs/common/next@2x.png")}
+                                alt=""
+                              />
+                            </div>
+                          </div>
+
+                          {/* <div className={`${prefix}-line`}></div> */}
+
+                          <div className={`${prefix}-footer-all`}>
+                            {(() => {
+                              if (i.passage.length > 0) {
+                                return i.passage.map((p, pindex) => {
+                                  return (
+                                    <div
+                                      className={`${prefix}-footer`}
+                                      key={pindex}
+                                    >
+                                      <span
+                                        className={`${prefix}-footer-text ${
+                                          new Date().getTime() >
+                                          new Date(
+                                            p.endTime.replace(/-/g, "/")
+                                          ).getTime()
+                                            ? `hasPast`
+                                            : `noPast`
+                                        }`}
+                                      >
+                                        {p.passageName}
+                                      </span>
+                                      <span
+                                        className={`${prefix}-footer-text ${
+                                          new Date().getTime() >
+                                          new Date(
+                                            p.endTime.replace(/-/g, "/")
+                                          ).getTime()
+                                            ? `hasPast`
+                                            : `noPast`
+                                        }`}
+                                      >
+                                        有效期至：{p.endTime}
+                                      </span>
+                                    </div>
+                                  );
+                                });
+                              }
+                            })()}
+                          </div>
+                        </div>
+                      );
+                    });
+                  }
+                })}
+              </div>
+            </div>
+          </Tabs>
+        </div>
+        <div className={`${prefix}-background flex1`}>
+          {(() => {
+            if (this.state.tabIndex === 1 && showBtn) {
+              return (
+                <div className={`${prefix}-btn`}>
+                  <Button
+                    className={`${prefix}-add-person`}
+                    type="primary"
+                    onClick={this.toAddPoep.bind(this)}
+                    icon={
+                      <img
+                        src={require("./../../assets/imgs/e_home_btn.png")}
+                        alt=""
+                      />
+                    }
+                  >
+                    新增成员
+                  </Button>
+                </div>
+              );
+            }
+            return null;
+          })()}
+        </div>
+      </div>
+    );
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject("store")(observer(Index));

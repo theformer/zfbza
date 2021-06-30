@@ -1,0 +1,182 @@
+$prefix: 'pass-way';
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  &-main{
+    padding: vw(24) vw(32);
+    &-head{
+      font-family: PingFangSC-Semibold;
+      font-size: ft(56);
+      color: #2B333F;
+      letter-spacing: 0;
+      margin: vw(24) 0 vw(8) 0;
+    }
+  }
+  &-main-input{
+    //width: vw(686);
+    //height: vw(686);
+    //margin: vw(200) auto;
+    border: none;
+    display: none;
+  }
+  &-imagePick{
+    width: vw(686);
+    height: vw(686);
+  }
+  .am-image-picker-list .am-flexbox .am-flexbox-item{
+    position: relative;
+    width: vw(582);
+    height: vw(582);
+    margin-right: 0;
+    background-color: #f4f4f5;
+  }
+  .am-flexbox-align-center .am-flexbox-item:not(:first-child) {
+    display: none;
+  }
+  .am-image-picker-list{
+    padding: 0;
+    border: none;
+  }
+  .am-flexbox{
+    //display: contents;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: vw(24);
+    width: vw(582);
+    height: vw(582);
+    margin: 0 auto;
+    -webkit-border-radius: vw(24);
+    -moz-border-radius: vw(24);
+    -ms-border-radius: vw(24);
+    -o-border-radius: vw(24);
+}
+  .am-image-picker-list .am-image-picker-upload-btn{
+    z-index: 99999;
+    background: #F4F7F9;
+    border: 0 solid #DFE3E8;
+    border-radius: vw(24);
+  }
+  .am-image-picker-list .am-image-picker-upload-btn input{
+    background: #F4F7F9;
+    border: 0 solid #DFE3E8;
+    border-radius: vw(24);
+    width: 100%;
+  }
+  .am-image-picker-list .am-image-picker-upload-btn:after{
+    display: none;
+  }
+  .am-image-picker-list .am-image-picker-upload-btn:before{
+    display: none;
+  }
+  .am-image-picker-list .am-image-picker-item .am-image-picker-item-content {
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+  .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove{
+    top: vw(20);
+    width: vw(30);
+    height: vw(30);
+    right: vw(12);
+    background-size: 100% auto;
+  }
+  &-main-content{
+    width: vw(582);
+    height: vw(582);
+    margin: vw(80) auto;
+    //margin: vw(200) auto;
+    //background: #f4f4f5;
+    align-items: center;
+    justify-content: center;
+    border-radius: vw(32);
+    z-index: 999;
+    position: relative;
+    &-photo{
+      width: vw(80);
+      height: vw(70);
+      margin-bottom: vw(22);
+    }
+    &-text{
+      font-family: PingFangSC-Medium;
+      font-size: vw(32);
+      color: #AEB8C6;
+      letter-spacing: 0;
+
+    }
+  }
+  &-sty{
+    z-index: 99999;
+    width: vw(582);
+    height: vw(582);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    pointer-events: none;
+  }
+  &-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: vw(128);
+    justify-content: center;
+    background: #FFFFFF;
+    box-shadow: 0 vw(4) vw(40) 0 #DFE3E8;
+  }
+  .am-button-primary::before{
+    border: 0px solid #108ee9 !important;
+  }
+  .files-save-btn{
+    border-radius: vw(8);
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    width: vw(686);
+    height: vw(96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #255BDA !important;
+  }
+  .save-btn{
+    border-radius: vw(8);
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    width: vw(686);
+    height: vw(96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #a6bcef;
+  }
+  .canvas-img{
+    display: none;
+  }
+  &-main-text{
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #808DA1;
+    letter-spacing: 0;
+    //margin-top: vw(16);
+  }
+}

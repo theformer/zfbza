@@ -1,0 +1,75 @@
+$prefix: 'dialog-phone';
+
+.#{$prefix} {
+
+}
+.modal-mask{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  .modal-wrap{
+    z-index: 99;
+    height: vw(424);
+    width: vw(582);
+    background: #fff;
+    animation:slideDown .3s;
+    margin: auto;
+    margin-top: vw(456);
+    border-radius: vw(6);
+    padding: vw(40) vw(24)  0 vw(24);
+    .header{
+
+      .title{
+        font-family: PingFangSC-Regular;
+        font-size: ft(34);
+        color: #2B333F;
+        letter-spacing: vw(-0.82);
+        text-align: center;
+      }
+    }
+    .body{
+      height: vw(260);
+    }
+    .footer{
+      height: vw(88);
+      padding-top: vw(20);
+      display: flex;
+      justify-content: center;
+      .cancel{
+        width: vw(206);
+        height: vw(46);
+        margin-right: vw(92);
+        font-family: PingFangSC-Regular;
+        font-size: ft(34);
+        color: #808DA1;
+        letter-spacing: vw(-0.82);
+        text-align: center;
+        line-height: vw(46);
+        &:active{
+          background: rgb(221,221,221)
+        }
+      }
+      .confirm{
+        width: vw(206);
+        height: vw(46);
+        font-family: PingFangSC-Regular;
+        font-size: ft(34);
+        color: #255BDA;
+        letter-spacing: vw(-0.82);
+        text-align: center;
+        line-height: vw(46);
+        &:active{
+          background: rgb(221,221,221)
+        }
+      }
+    }
+  }
+}
+@keyframes slideDown
+{
+  from {margin-top:0px;}
+  to {margin-top:120px;}
+}

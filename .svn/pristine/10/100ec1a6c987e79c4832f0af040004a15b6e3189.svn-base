@@ -1,0 +1,38 @@
+$prefix: 'common-problem';
+
+.#{$prefix} {
+  min-height: 100vh;
+  background: #f2f5f8;
+  padding: vw(16) 0;
+  &-main{
+    padding: vw(16);
+    background: #fff;
+    margin-bottom: vw(16);
+    &-issue{
+      font-family: PingFangSC-Medium;
+      font-size: ft(34);
+      color: #2B333F;
+      letter-spacing: 0;
+      text-align: justify;
+      margin-bottom: vw(16);
+      &-answer{
+        padding: vw(16);
+        font-family: PingFangSC-Regular;
+        font-size: ft(28);
+        color: #2B333F;
+        letter-spacing: 0;
+        text-align: justify;
+      }
+    }
+  }
+  &-footer{
+    background: #f2f5f8;
+  }
+}
+.main-answer{
+  font-family: PingFangSC-Regular;
+  font-size: ft(28);
+  color: #2B333F;
+  letter-spacing: 0;
+  text-align: justify;
+}

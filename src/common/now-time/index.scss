@@ -1,0 +1,26 @@
+$prefix: 'now-time';
+
+.#{$prefix} {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: vw(56) 0;
+  &-data{
+    font-family: PingFangSC-Medium;
+    font-size: ft(72);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: vw(60);
+    margin-bottom: vw(24);
+  }
+  &-house{
+    font-family: PingFangSC-Medium;
+    font-size: ft(90);
+    color: #404956;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: vw(80);
+  }
+}

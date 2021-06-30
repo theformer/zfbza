@@ -1,0 +1,59 @@
+$prefix: 'report-detail';
+
+.#{$prefix} {
+  &-header{
+  padding: vw(32);
+  }
+  &-header-top{
+    margin-bottom: vw(24);
+  }
+  .header-photo{
+    width: vw(96);
+    height: vw(96);
+    margin-right: vw(24);
+  }
+  .header-right{
+    justify-content: center;
+  }
+  .header-footer{
+
+  }
+  .header-name{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: vw(-0.82);
+    line-height: vw(48);
+  }
+  .header-where{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.18);
+    line-height: vw(40);
+  }
+  .footer-line{
+    background: #DFE3E8;
+    height: vw(1);
+  }
+  .footer-content{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: vw(-0.18);
+    text-align: justify;
+    line-height: vw(40);
+  }
+  .footer-time{
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #AEB8C6;
+    letter-spacing: vw(-0.14);
+    line-height: vw(40);
+    display: block;
+    margin-bottom: vw(24);
+  }
+  &-main{
+    padding: vw(32);
+  }
+}

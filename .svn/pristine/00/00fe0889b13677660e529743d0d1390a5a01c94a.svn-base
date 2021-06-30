@@ -1,0 +1,34 @@
+$prefix: 'selective-type';
+
+.#{$prefix} {
+  &-select {
+    width: 100%;
+    background: #f8f8f8;
+    min-height: 100vh;
+    padding: vw(32);
+    &-type {
+      width: 100%;
+      border-radius: vw(16);
+      background: #fff;
+    }
+    &-list {
+      height: vw(112);
+      padding: vw(34) 0 vw(34) vw(32);
+      
+    }
+    &-list:nth-child(n+2) {
+      border-top: vw(2) solid #EFF1F3;
+    }
+    &-item {
+      font-size: ft(34);
+      color: #2B333F;
+    }
+    &-radio {
+      margin-right: vw(32);
+    }
+  }
+}
+  [type="checkbox"], [type="radio"] {
+  width: vw(40);
+  height: vw(40);
+}

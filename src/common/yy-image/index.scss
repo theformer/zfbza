@@ -1,0 +1,8 @@
+@keyframes imgRotate{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.yy-image-loading {
+    transform: rotate(360deg);
+    animation: imgRotate 1s cubic-bezier(0.39, 0.575, 0.565, 1) infinite;
+}

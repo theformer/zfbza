@@ -1,0 +1,78 @@
+const proxy = require("http-proxy-middleware");
+// const apiService = 'http://192.168.5.101:8400'
+// const apiService = 'https://proapi.yiyun-smart.com'
+// const apiService = 'https://api-fcsp.zgyiyun.com:1200'
+module.exports = (app) => {
+  app.use(
+    "/api",
+    proxy({
+      target: "http://192.168.5.248:10000",
+      // target: 'http://192.168.5.167:8400',
+      changeOrigin: true,
+      pathRewrite: {
+        "^/api": "/",
+      },
+    })
+  );
+  app.use(
+    "/test",
+    proxy({
+      target: "http://test.ngrok.yiyun-smart.com:4441",
+      // target: 'http://192.168.5.167:8400',
+      changeOrigin: true,
+      pathRewrite: {
+        "^/test": "/",
+      },
+    })
+  );
+  app.use(
+    "/zgyiyun",
+    proxy({
+      target: "https://wzza.zgyiyun.com",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/zgyiyun": "/",
+      },
+    })
+  );
+  app.use(
+    "/wzzasmart",
+    proxy({
+      target: "https://wzza.wzzasmart.com",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/wzzasmart": "/",
+      },
+    })
+  );
+  app.use(
+    "/ip",
+    proxy({
+      target: "http://ip",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/wzzasmart": "/",
+      },
+    })
+  );
+  app.use(
+    "/zawy",
+    proxy({
+      target: "http://zawy.wzzasmart.com",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/wzzasmart": "/",
+      },
+    })
+  );
+    app.use(
+        "/ceshi",
+        proxy({
+            target: "http://192.168.5.130:7081",
+            changeOrigin: true,
+            pathRewrite: {
+                "^/ceshi": "/",
+            },
+        })
+    );
+};

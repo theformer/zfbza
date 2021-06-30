@@ -1,0 +1,34 @@
+$prefix: 'privacy-page';
+
+.#{$prefix} {
+
+  &-main{
+    padding: vw(40) vw(44) 0 vw(32);
+  }
+  &-title{
+    padding-bottom: vw(28);
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: justify;
+    line-height: vw(44);
+  }
+  &-text{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    text-align: justify;
+    line-height: vw(44);
+  }
+  &-p{
+    padding-top: vw(40);
+    padding-bottom: vw(32);
+    font-family: PingFangSC-Medium;
+    font-size: ft(28);
+    color: #2B333F;
+    letter-spacing: 0;
+    line-height: vw(44)
+  }
+}

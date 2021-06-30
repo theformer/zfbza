@@ -1,0 +1,64 @@
+$prefix: "yykj-loading";
+
+@keyframes rotate {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+}
+@keyframes bg {
+    0% {background-image: url("../../assets/imgs/loading/Load_animation1@2x.png")}
+    10% {background-image: url("../../assets/imgs/loading/Load_animation2@2x.png")}
+    20% {background-image: url("../../assets/imgs/loading/Load_animation3@2x.png")}
+    30% {background-image: url("../../assets/imgs/loading/Load_animation4@2x.png")}
+    40% {background-image: url("../../assets/imgs/loading/Load_animation5@2x.png")}
+    50% {background-image: url("../../assets/imgs/loading/Load_animation6@2x.png")}
+    60% {background-image: url("../../assets/imgs/loading/Load_animation7@2x.png")}
+    70% {background-image: url("../../assets/imgs/loading/Load_animation8@2x.png")}
+    80% {background-image: url("../../assets/imgs/loading/Load_animation9@2x.png")}
+    90% {background-image: url("../../assets/imgs/loading/Load_animation10@2x.png")}
+    100% {background-image: url("../../assets/imgs/loading/Load_animation11@2x.png")}
+}
+.#{$prefix} {
+    &-wrap {
+        width: 2.8rem;
+        height: 2.8rem;
+        // background: rgba(0,0,0,0.5);
+        background: rgba(255, 255, 255, 1);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: .1rem;
+        z-index: 9999999999999;
+    }
+    &-icon {
+        width: .6rem;
+        height: .6rem;
+        // background: red;
+        border-radius: 50%;
+        // background: conic-gradient(gray, #fff);
+        // mask: radial-gradient(transparent .23rem, #000 .23rem);
+        // -webkit-mask: radial-gradient(transparent .23rem, #000 .23rem);
+        display: block;
+        &-box {
+            height: 2.8rem;
+            width: 2.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: bg 2s linear infinite;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    }
+    &-title {
+        height: .6rem;
+        width: 100%;
+        line-height: .6rem;
+        text-align: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: white;
+        font-size: .28rem;
+    }
+}

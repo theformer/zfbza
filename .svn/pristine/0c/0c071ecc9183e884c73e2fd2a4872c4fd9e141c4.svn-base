@@ -1,0 +1,94 @@
+$prefix : "contact-number";
+.#{$prefix} {
+  min-height: 100vh;
+  .am-list-body div:not(:last-child) .am-list-line::after{
+    display: none !important;
+  }
+  &-bg{
+    background: #f2f5f8;
+    padding-top: vw(20);
+  }
+  .am-list-body>.am-list-item-middle{
+    display: none;
+  }
+  &-form-phone{
+    display: block !important;
+    height: vw(96) !important;
+  }
+  .am-list-item .am-input-control input{
+    font-size: ft(34);
+    padding: vw(4) 0;
+  }
+  &-form-phone>.am-list-line{
+    height: vw(96) !important;
+  }
+  &-form-line{
+    background: #ECEEF2;
+    height: vw(2);
+    width: vw(718);
+    margin-left: vw(32);
+  }
+  .retry{
+    color: #AEB8C6;
+  }
+  .code-input{
+    width: vw(468);
+    background: transparent;
+    height: vw(48);
+    font-size: ft(34);
+  }
+  .auth-code{
+    border: none;
+    color: #255BDA;
+    font-size: ft(28);
+    padding-right: vw(30);
+    background: transparent;
+  }
+  .auth-code::before {
+    border: none !important;
+  }
+  &-form-footer{
+    padding-left: vw(30);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+  .login-cards{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: vw(750);
+    height: vw(96);
+    align-items: center;
+  }
+  &-main{
+    background: #f2f5f8;
+    width: 100%;
+    height: vw(870);
+  }
+  &-footer{
+    background: #FFFFFF;
+    box-shadow: 0 vw(4) vw(40) 0 #DFE3E8;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: vw(128);
+  }
+  &-footer-btn{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    height: vw(96);
+    width: vw(686);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+  }
+
+}
+
+

@@ -1,0 +1,84 @@
+$prefix: "yykj-modal";
+
+.#{$prefix} {
+    &-wrap {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        &-show {
+            background: rgba(0, 0, 0, 0.3);
+            transition: all .3s ease;
+        }
+        &-hide {
+            background: rgba(0, 0, 0, 0);
+            transition: all .3s ease;
+        }
+    }
+    &-box {
+        position: absolute;
+        font-size: .32rem;
+        padding: 0 .2rem;
+        left: 50%;
+        top: 100%;
+        transform: translate(-50%, 0);
+        background: white;
+        border-radius: .2rem;
+        &-show {
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: all .3s ease;
+        }
+        &-hide {
+            top: 100%;
+            transform: translate(-50, 0);
+            transition: all .3s ease;
+        }
+    }
+    &-default-header {
+        height: .88rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // border-bottom: 1px solid #ededed;
+        color: #373737;
+    }
+    &-default-body {
+        width: 6.02rem;
+        height: 2rem;
+        display: flex;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // border-top: 1px solid #ededed;
+        color: #8e8e93;
+    }
+    &-default-button-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: .88rem;
+    }
+    &-default-cancel-button, &-default-confirm-button {
+        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        height: 100%;
+        position: relative;
+    }
+    // &-default-cancel-button::after {
+    //     content: "";
+    //     display: block;
+    //     width: 2px;
+    //     height: 90%;
+    //     background: #ededed;
+    //     position: absolute;
+    //     left: 100%;
+    //     top: 50%;
+    //     transform: translate(-50%, -50%);
+    // }
+}

@@ -1,0 +1,29 @@
+$prefix: 'EmptyPage';
+
+.#{$prefix} {
+    width: 100%;
+    height: 100%;
+    z-index: 998;
+    background-color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #999999;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+
+    &-empty {
+        // width: vw(424);
+        // height: vw(324);
+        margin-bottom: vw(30);
+    }
+}

@@ -1,0 +1,29 @@
+$prefix: 'Logout';
+
+.#{$prefix} {
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  &-header{
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    margin: vw(50) auto;
+    font-size: ft(44);
+
+  }
+  &-main{
+    padding: vw(20);
+  }
+  &-p{
+    margin-bottom: vw(20);
+    color: #2B333F;
+    letter-spacing: 0;
+    //text-align: center;
+  }
+  .h3{
+    margin-bottom: vw(10);
+  }
+  .p{
+   margin-bottom: vw(10);
+  }
+}

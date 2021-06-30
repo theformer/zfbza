@@ -1,0 +1,89 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast } from 'antd-mobile'
+import './index.scss'
+import { back, jump } from '../../utlis/utlis'
+import http from '../../utlis/http'
+
+const prefix = 'test'
+Toast.config({
+  mask: false
+})
+class Test extends Component {
+  constructor(props) {
+    super(props)
+    this.store = this.props.store.testStore
+    const { bIsAlipayMini, bIsDtDreamApp } = this.props.store.commonStore
+  }
+  componentDidMount() {
+    // 修改mobx中存储的值
+    this.store.name = 'name'
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, '/index')
+  }
+  goBack() {
+    // 返回
+    back.call(this)
+  }
+  changeName() {
+    // 修改mobx中存储的值
+    this.store.name = 'changename' + Math.random()
+    http.get({
+      url: "mgop.yykj.community.demoTest",
+      // url: "mgop.yykj.community.urlTest",
+      // api: '/test/url',
+      // api: '/test/url',
+      data: {
+        appName: 'app'
+      }
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      // eslint-disable-next-line no-console
+      console.error(err)
+    })
+    // window.ZWJSBridge.onReady(() => {
+    //   window.ZWJSBridge.setTitle({ title: '邮箱正文' }).then((result) => { console.log(result) }).catch((error) => { console.log(error) })
+    // })
+    //单页应用路由切换后或在异步获取到pv日志所需的参数后再执行sendPV：
+    // window.aplus_queue.push({
+    //   'action':'aplus.sendPV',
+    //   'arguments':[{
+    //     is_auto:false
+    //   },
+    //   {
+    //     //自定义PV参数key-value键值对（只能是这种平铺的json，不能做多层嵌套），如：
+    //     miniAppId: '2001601131',
+    //   }]
+    // })
+    // console.log(window.ZWJSBridge)
+    // window.ZWJSBridge.onReady(() => {
+    //   debugger
+    //   window.ZWJSBridge.getUserType().then((result) => {
+    //     console.log(result)
+    //     debugger
+    //   }).catch((error) => {
+    //     console.log(error)
+    //   })
+    // })
+  }
+  render() {
+    // 从mobx中拿所需属性
+    const { name } = this.store
+    return (
+      <div className={`${prefix}`} onClick={this.changeName.bind(this)}>
+        { name}
+      </div>
+    )
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+  observer(Test)
+)

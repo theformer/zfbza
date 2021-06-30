@@ -1,0 +1,49 @@
+$prefix: 'candicine';
+
+.#{$prefix} {
+  &-box {
+    background: #f8f8f8;
+    min-height: 100vh;
+    padding: vw(32);
+  }
+  &-noise-question {
+    padding: 0 vw(32);
+    background: #fff;
+    border-radius: ft(16);
+  }
+  &-noise-top {
+    height: vw(109);
+    line-height: vw(109);
+    font-size: 17px;
+    color: #2B333F;
+    border-bottom: 1px solid #DFE3E8;
+  }
+  &-noise-between {
+    width: vw(622);
+    margin:  0 auto;
+    margin-top: vw(24);
+    textarea {
+      height: vw(344);
+      width: vw(622);
+      border: none;
+      resize: none;
+      // color: #AEB8C6;
+    }
+  }
+  &-noise-bottom {
+    min-height: vw(256);
+    border-top: 1px solid #DFE3E8;
+    padding-top: vw(29);
+  }
+  &-footer-button {
+    height: vw(128);
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  &-button {
+    margin: vw(16) vw(32);
+  }
+}

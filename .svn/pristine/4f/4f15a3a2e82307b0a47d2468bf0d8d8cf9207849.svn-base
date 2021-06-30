@@ -1,0 +1,286 @@
+/* eslint-disable no-console */
+/* eslint-disable no-debugger */
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Toast, Button, WhiteSpace, ImagePicker } from 'antd-mobile'
+import './index.scss'
+import {
+  back,
+  jump,
+  chooseImg,
+  upload,
+  getUrlValue,
+  getOrientation,
+  base64ToArrayBuffer,
+  setTitle
+} from '../../utlis/utlis'
+import http from '../../utlis/http'
+import Cropper from 'react-cropper'
+import 'cropperjs/dist/cropper.css' // 引入Cropper对应的css
+const prefix = 'pass-way'
+Toast.config({
+  mask: false
+})
+class PassWay extends Component {
+  constructor(props) {
+    super(props)
+
+  }
+  state = {
+    way: '',
+    files: [],
+    // spinFiles:[]
+    // orientation
+    // tempPath:'',    //存储文件
+    // showCropper:false
+  }
+  componentWillUnmount() {
+    localStorage.setItem('passWayVal', '')
+  }
+  componentDidMount() {
+    setTitle.call(this, '通行方式')
+    // 修改mobx中存储的值
+    let href = window.location.href
+    let passWayVal = localStorage.getItem('passWayVal')
+    this.setState({
+      way: passWayVal
+    })
+
+  }
+  saveBtn() {
+    if (this.state.files && this.state.files.length > 0) {
+      if (!this.state.way) {
+        jump.call(this, '/choose-building')
+      } else if (this.state.way === '2') {
+        jump.call(this, '/user-information')
+      } else if (this.state.way == 1) {
+        jump.call(this, '/personal-information')
+      }
+    } else {
+      Toast.info('请上传通行方式')
+    }
+  }
+  //上传头像
+  onChangeImg = (files, type, index) => {
+    let userInfo = localStorage.getItem('userInfo')
+    if (userInfo) {
+      userInfo = JSON.parse(userInfo)
+    }
+    let nation = localStorage.getItem('nation')
+    if (files && files.length == 0) {
+      this.setState({
+        files,
+        // spinFiles:[]
+      })
+    } else {
+      this.setState({
+        operationType: files[0].orientation
+      },
+        () => {
+          console.log(files, '我是files')
+          if (files && files.length > 0) {
+            let _self = this
+            _self.getUpwardImage(files[0].url, (base64) => {
+              files[0].url = base64
+              _self.setState({
+                files,
+              }, () => {
+                Toast.loading()
+                upload({
+                  files: files,
+                  props: 'url'
+                }).then(res => {
+                  console.log(res, '我是res', _self.state.way)
+                  if (!_self.state.way) {
+                    console.log('我没走进来吗')
+                    localStorage.setItem('photoImg', res[0])
+                    http.post({
+                      url: '/zlb/userInfo/save',
+                      data: {
+                        userName: userInfo.username,
+                        tel: userInfo.mobile,
+                        certificateType: '身份证',
+                        certificateId: userInfo.certificateId,
+                        nation: nation,
+                        imageUrl: res[0],
+                        source: 'ZLB',
+                        zlbUserId: userInfo.userid
+                      }
+                    }).then(res => {
+                      if (res.data.code == 1) {
+                        http.get({
+                          url: '/zlb/user/idCard',
+                          data: {
+                            zlbUserId: userInfo.userid
+                          }
+                        }).then(res => {
+                          let data = res && res.data && res.data.data
+                          if (data) {
+                            if (data.id != undefined) {
+                              localStorage.setItem('dataId', data.id)
+                            }
+                          }
+                        })
+                        console.log(_self.state.files, '我是上传的图片文件')
+                      } else {
+                        Toast.info(res.data.message)
+                      }
+                    }).catch(err => {
+                      Toast.info(res.data.message)
+                    })
+                  } else if (_self.state.way === '2') {
+                    if (localStorage.getItem('addUser')) {
+                      let addUser = JSON.parse(localStorage.getItem('addUser'))
+                      addUser.imageUrl = res[0]
+                      console.log(addUser, '第二个页面缓存addUser的数据')
+                      localStorage.setItem('addUser', JSON.stringify(addUser))
+                    }
+                  } else {
+                    let id = localStorage.getItem('zjuserid')
+                    http.post({
+                      url: '/user/image/update',
+                      data: {
+                        id: id,
+                        imageUrl: res[0]
+                      }
+                    }).then(res => {
+                      if (res.data.code == 1) {
+                        Toast.info(res.data.message)
+                      } else {
+                        Toast.info(res.data.message)
+                        console.log('我是不是走的这个')
+                      }
+                    })
+                  }
+                  Toast.hide()
+                }).catch(err => {
+                  console.log(err, '我是返回的res')
+                })
+              });
+
+            })
+            console.log(files[0].url, '我是返回的值', files[0])
+
+          }
+        });
+    }
+  }
+  /**
+   * 校正图片方向
+   * @param base64 校正前图片base64
+   * @param cb 回调函数，带有校正后的图片base64参数
+   */
+  getUpwardImage(base64, cb) {
+    console.log(base64, '我是base64编码')
+    let orientation = this.state.operationType
+    console.log(orientation, '我是图片')
+    let canvas = document.getElementById('imgCanvas')
+    let ctx = canvas.getContext('2d')
+    let img = new Image()
+    img.src = base64
+    img.onload = function () {
+      console.log('我没走这个吗')
+      let width = img.width, height = img.height;
+      let compressionRatio = 0.3;//图片压缩率 0~1 0最大压缩率 1不压缩
+      if (orientation === 3) {
+        console.log('我走的是这个吗，canvas宽高互换Math.path')
+        //旋转180°
+        canvas.width = width;
+        canvas.height = height;
+        ctx.rotate(Math.PI);//预览修正值
+        ctx.drawImage(img, -width, -height, width, height)
+      } else if (orientation === 8) {
+        console.log('我走的是这个吗，canvas宽高互换6')
+        //注意：此处canvas的宽高互换 //旋转90°
+        canvas.width = height;
+        canvas.height = width;
+        ctx.rotate(Math.PI / 2);//预览修正值
+        ctx.drawImage(img, 0, -height, width, height)
+      } else if (orientation === 6) {
+        console.log('我走的是这个吗，canvas宽高互换8')
+        //注意：此处canvas的宽高互换，旋转270°
+        canvas.width = height;
+        canvas.height = width;
+        ctx.rotate(-Math.PI / 2);//预览修正值
+        ctx.drawImage(img, -width, 0, width, height)
+      } else {
+        console.log('我走的是这个吗，不旋转原图')
+        //不旋转原图
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+      }
+
+      if (typeof cb === 'function') cb(canvas.toDataURL('image/jpeg', compressionRatio))
+    };
+  }
+
+  toIndex() {
+    // 跳转
+    jump.call(this, '/index')
+  }
+  goBack() {
+    // 返回
+    back.call(this)
+  }
+
+  onChange = (files, type, index) => {
+    console.log(files, type, index);
+    this.setState({
+      files,
+    })
+  }
+  render() {
+    // 从mobx中拿所需属性
+    const { files, way } = this.state
+    return (
+      <React.Fragment>
+        <div className={`${prefix} flex flex-column`}>
+          <div className={`${prefix}-main`}>
+            <div className={`${prefix}-main-head`}>
+              通行方式
+              </div>
+            <div className={`${prefix}-main-text`}>请选择照片，由物业下发通行证</div>
+            <canvas id="imgCanvas" className={`${prefix}-imagePick canvas-img`}></canvas>
+            <div className={`${prefix}-main-content flex flex-column`}>
+              <ImagePicker
+                className={`${prefix}-imagePick`}
+                files={files}
+                onChange={this.onChangeImg}
+                onImageClick={(index, fs) => console.log(index, fs)}
+                selectable={files.length < 1}
+                multiple={false}
+                disableDelete={false}
+              />
+
+              {
+                files && files.length > 0 ? null : <div className={`${prefix}-sty`}>
+                  <img className={`${prefix}-main-content-photo`} src={require('./../../assets/imgs/common/camera@2x.png')} alt="" />
+                  <span className={`${prefix}-main-content-text`}>选择照片</span>
+                </div>
+              }
+            </div>
+          </div>
+          {
+            (() => {
+              if (files && files.length > 0) {
+                return <div className={`${prefix}-footer flex1 flex align-center`}>
+                  <Button className={'save-btn files-save-btn'} onClick={this.saveBtn.bind(this)} type='primary'>下一步</Button>
+                </div>
+              }
+              return <div className={`${prefix}-footer flex1 flex align-center`}>
+                <Button className={'save-btn'} onClick={this.saveBtn.bind(this)} type='primary'>下一步</Button></div>
+
+            })()
+          }
+        </div>
+      </React.Fragment>
+
+    )
+  }
+}
+// inject 将store注入到当Test组件的props中
+export default inject('store')(
+  observer(PassWay)
+)

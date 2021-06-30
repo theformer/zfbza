@@ -1,0 +1,154 @@
+$prefix : "auth-entication";
+.#{$prefix} {
+  min-height: 100vh;
+  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+
+  &-footer{
+
+    &-saveBtn{
+      width: vw(686);
+      height: vw(96);
+      font-family: PingFangSC-Regular;
+      font-size: ft(34);
+      color: #FFFFFF;
+      letter-spacing: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+  }
+  input:disabled{
+    background: #ffffff;
+  }
+
+  input[disabled]{color:#fff;opacity:1}
+  .give-code{
+    width: vw(158);
+    overflow: inherit;
+    border: none;
+  }
+  .am-list-item .am-list-line .am-list-arrow{
+    width: vw(30);
+    height: vw(30);
+  }
+  .btn-code{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #2B333F;
+    letter-spacing: vw(-0.54);
+    text-align: left;
+    line-height: vw(48);
+  }
+}
+.#{$prefix}-main{
+  margin-left: vw(32);
+}
+.#{$prefix}-main-head{
+  font-family: PingFangSC-Semibold;
+  font-size: ft(56);
+  color: #2B333F;
+  letter-spacing: 0;
+  margin: vw(24) 0 vw(72) 0;
+}
+.#{$prefix}-main-form-name{
+
+  input::-webkit-input-placeholder{
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #AEB8C6;
+    letter-spacing: 0;
+  }
+  input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #AEB8C6;
+    letter-spacing: 0;
+  }
+  input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #AEB8C6;
+    letter-spacing: 0;
+  }
+  input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #AEB8C6;
+    letter-spacing: 0;
+  }
+  //border-bottom: ;
+}
+.login-idCard{
+  .am-list-item-middle{
+    padding-left: 0;
+    .am-list-line{
+      .am-list-extra{
+        display: none;
+      }
+    }
+  }
+}
+
+.code-input{
+  width: vw(360);
+  //height: vw(48);
+}
+.auth-code{
+  border: none;
+  color: #255BDA;
+  font-size: ft(28);
+}
+.auth-code::before {
+  border: none !important;
+}
+.#{$prefix}-footer{
+  margin: vw(32);
+}
+.#{$prefix}-form-footer{
+  width: vw(688);
+  height: vw(88);
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+.retry{
+  color: #AEB8C6;
+  //width:  vw(186);
+}
+
+
+
+
+.#{$prefix}-footer-saveBtn{
+  background: #255BDA;
+  border-radius: vw(8);
+}
+.#{$prefix}-footer-text{
+  display: flex;
+  justify-content: center;
+  margin-top: vw(12);
+  font-family: PingFangSC-Regular;
+  font-size: vw(28);
+  color: #255BDA;
+  letter-spacing: 0;
+}
+.#{$prefix}-footer-privacy{
+  font-family: PingFangSC-Regular;
+  color: #255BDA;
+  letter-spacing: 0;
+}
+.#{$prefix}-footer-user{
+  font-family: PingFangSC-Regular;
+  color: #255BDA;
+  letter-spacing: 0;
+}
+
+
+
+
+
+
+
+

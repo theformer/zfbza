@@ -1,0 +1,11 @@
+$prefix: "picker-view";
+
+.#{$prefix} {
+    &-wrap {
+        display: flex;
+    }
+    &-list {
+        width: 100%;
+        position: absolute;
+    }
+}

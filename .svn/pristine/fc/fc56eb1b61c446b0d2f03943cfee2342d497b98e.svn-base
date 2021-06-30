@@ -1,0 +1,124 @@
+$prefix: "cardetails";
+
+.#{$prefix} {
+  &-car-detail {
+    height: 100vh;
+    background: #f4f7f9;
+  }
+
+  &-cars {
+    width: 100%;
+    height: vw(214);
+    // background: #255bda;
+    text-align: center;
+    padding: vw(32) 0 vw(40);
+    color: #ffffff;
+    margin-bottom: vw(16);
+    padding: vw(10) 0;
+    position: relative;
+  }
+
+  &-cars-item {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+  }
+
+  &-car-id {
+    font-family: PingFangSC-Semibold;
+    letter-spacing: 0;
+    font-size: ft(64);
+    margin-bottom: vw(8);
+  }
+
+  &-car-pro {
+    font-size: ft(32);
+  }
+
+  &-car-house {
+    padding: vw(32);
+  }
+
+  &-hosing {
+    display: inline;
+    font-size: ft(28);
+    color: #2b333f;
+    margin-right: vw(16);
+  }
+
+  &-question {
+    font-size: ft(24);
+    color: #f86e21;
+  }
+
+  &-east {
+    padding: vw(50) 0;
+    //   margin-bottom: vw(16);
+  }
+
+  &-pass {
+    padding: vw(32) vw(32);
+    background: #fff;
+    margin-bottom: vw(16);
+    font-size: ft(28);
+  }
+
+  &-pass-one {
+    margin-bottom: vw(16);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-pass-card {
+    color: #808da1;
+    // margin-right: vw(122);
+    // margin-bottom: vw(32);
+    font-size: ft(28);
+  }
+
+  &-pass-time {
+    font-size: ft(28);
+    color: #808da1;
+  }
+
+  &-btn {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 99999;
+  }
+  .my-list {
+    height: 100%;
+  }
+  &-empty-con {
+    position: relative;
+    height: vw(400);
+    padding: vw(40);
+    box-sizing: content-box;
+  }
+}
+
+.am-list-item {
+  height: vw(110);
+}
+
+.am-list-item .am-list-line .am-list-extra {
+  color: #2b333f;
+}
+.soonPast {
+  color: #ff9500;
+}
+
+.noPast {
+  color: #34c759;
+}
+
+.hasPast {
+  color: #e63633;
+}

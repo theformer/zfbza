@@ -1,0 +1,127 @@
+$prefix: 'visitor-detail';
+
+.#{$prefix} {
+  background: #f2f5f8;
+  min-height: 100vh;
+  position: relative;
+  &-box{
+    height: vw(428);
+    width: vw(686);
+    margin: vw(32);
+    background: #fff;
+    border-radius: vw(24);
+  }
+  &-box-head{
+    background: url("../../assets/imgs/common/visitor_bg@2x.png");
+    background-size: 100% 100%;
+    width: vw(686);
+    height: vw(200);
+    border-radius: vw(20) vw(20) 0 0;
+    padding: vw(40);
+  }
+  &-box-head-photo{
+    width: vw(120);
+    height: vw(120);
+    margin-right: vw(32);
+  }
+  &-box-head-detail{
+
+  }
+  &-detail{
+    margin-bottom: vw(20);
+    height: vw(44);
+    align-items: center;
+  }
+  &-detail-left{
+    margin-right: vw(24);
+    opacity: 0.4;
+    font-family: PingFangSC-Regular;
+    font-size: ft(24);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    display: block;
+  }
+  &-detail-right{
+    font-family: PingFangSC-Regular;
+    font-size: ft(32);
+    color: #FFFFFF;
+    letter-spacing: 0;
+  }
+  &-main{
+    padding: vw(20) vw(40);
+  }
+  &-main-col{
+    padding: vw(20) 0;
+  }
+  &-main-col-left{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    color: #808DA1;
+    letter-spacing: vw(-0.44);
+    text-align: left;
+    line-height: vw(28);
+    display: block;
+    width: vw(112);
+    margin-right: vw(32);
+  }
+  &-main-col-right{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+  }
+  &-pass{
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+    color: #00B578
+  }
+  &-nopass{
+    color: #E63633;
+    font-family: PingFangSC-Regular;
+    font-size: ft(28);
+    letter-spacing: 0;
+    text-align: left;
+    line-height: vw(28);
+  }
+  &-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: vw(128);
+    background: #fff;
+    align-items: center;
+    width: 100%;
+    justify-content: center
+  }
+  &-footer-left{
+      margin-right: vw(34);
+      background: #FFFFFF;
+      border: vw(2) solid #DFE3E8 !important;
+      border-radius: vw(8);
+      width: vw(326);
+      height:vw(96);
+      font-family: PingFangSC-Regular;
+      font-size: ft(34);
+      color: #2B333F;
+      letter-spacing: 0;
+      text-align: center;
+  }
+  &-footer-right{
+    background: #255BDA;
+    border-radius: vw(8);
+    width: vw(326);
+    height:vw(96);
+    font-family: PingFangSC-Regular;
+    font-size: ft(34);
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+  }
+  .am-button-primary::before{
+    display: none;
+  }
+}
