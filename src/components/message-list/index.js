@@ -22,17 +22,6 @@ class Index extends Component {
             rowHasChanged: (row1, row2) => row1 !== row2,
         })
         this.state={
-            a : [
-                {name:'大风起兮风飞扬',
-                    title:'水景苑-1-A-201新增业主王某人，联系电话19957708465',
-                    time:'2020-08-05 12:12:36'},
-                {name:'时不利兮骓不逝',
-                    title:'水景苑-1-A-201新增业主魏某人，联系电话19957708465',
-                    time:'2020-08-05 12:12:36'},
-                {name:'俺的猛士兮走四方',
-                    title:'水景苑-1-A-201新增业主陈某人，联系电话19957708465',
-                    time:'2020-08-05 12:12:36'},
-            ],
             dataList:[],
             pageSize:20,
             pageNum:1,
@@ -67,14 +56,8 @@ class Index extends Component {
         })
         Toast.loading()
         http.get({
-            url: `/api/news/list?complexCode=${complexCode}&userId=${userid}&pageSize=${this.state.pageSize}&${this.state.pageNum}`,
-            // data: {
-            //     complexCode:complexCode,
-            //     userId:userid,
-            //     pageSize:this.state.pageSize,
-            //     pageCount: this.state.pageNum
-            //
-            // }
+            url: `/api/news/list?complexCode=${complexCode}&userId=${userid}&pageSize=${this.state.pageSize}&pageCount=${this.state.pageNum}`,
+            // url: `/api/news/list?complexCode=3303030031&userId=f19cc7bc7a224317bb96ec514e998f34&pageSize=${this.state.pageSize}&pageCount=${this.state.pageNum}`,
         }).then(res=> {
             Toast.hide()
             this.setLoaded()
@@ -95,11 +78,9 @@ class Index extends Component {
                 })
 
             }
-            console.log(_self.state.dataList,7777)
         })
     }
     onEndListReached = () => {
-        console.log('我在动吗')
         if (!this.state.isLoading) {
             this.setState({
                 pageNum:this.state.pageNum+1,
@@ -153,7 +134,6 @@ class Index extends Component {
     }
 
     onChangeMessageClick =(i) =>{
-        console.log(i,'我是i')
         this.setState({
             pageNum:1
         })

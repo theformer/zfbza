@@ -1,0 +1,175 @@
+/* eslint-disable no-debugger */
+import axios from "axios";
+import qs from "qs";
+import { Toast } from "antd-mobile";
+import {setStorage,getStorage} from './utlis'
+// import { fromPairs } from "_@types_lodash@4.14.170@@types/lodash";
+Toast.config({
+  mask: false,
+});
+
+// 环境的切换
+// if (process.env.NODE_ENV == "development") {
+//   axios.defaults.baseURL = "http://192.168.5.248:10000";
+// } else if (process.env.NODE_ENV == "debug") {
+//   axios.defaults.baseURL = "";
+// } else if (process.env.NODE_ENV == "production") {
+//   axios.defaults.baseURL = "https://wzza.zgyiyun.com";
+// }
+
+axios.defaults.timeout = 1000 * 12;
+
+let  token ;
+
+
+ getStorage('token',res=>{
+     token =  res
+})
+axios.defaults.headers.post["Content-Type"] = "application/json;charset=UTF-8";
+axios.defaults.headers.post["X-Requested-With"] = "XMLHttpRequest";
+axios.defaults.headers.post["TwiAuth"] = token || "";
+axios.defaults.headers.post["Twi_Client"] = "web";
+
+const appKey = "glihlr69+2001601131+urbqwj"; // 智安小区
+
+// 响应拦截器
+axios.interceptors.response.use(
+  (response) => {
+    // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据
+    // 否则的话抛出错误
+    if (response.status === 200) {
+      console.log('我走了这里吗',response.config.url)
+      if(response.data.code==401){
+        console.log('我是401')
+          let data = {
+              secretKey:btoa('ZAXQ/Yiyun@2020')
+          }
+        post({url:'/test/user/token',data}).then(async res=>{
+            console.log(res)
+            let data = res&&res.data
+            if(data.code ==1){
+                token = res.data.data
+                await setStorage('token',res.data.data)
+                window.my.postMessage({
+                    token:token
+                })
+                window.location.reload();
+            }
+        }).catch(err=>{
+          console.log(err,'我是发秘籍哦 ')
+        })
+      }
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(response);
+    }
+  }
+
+);
+
+let host = "https://wzza.zgyiyun.com";
+// eslint-disable-next-line no-undef
+// if (process.env.NODE_ENV === "development") {
+//   // host = 'http://192.168.100.222:7081'
+//   // host = 'http://121.196.45.25:7082'
+//   // host = '/apis/'
+// }
+
+/**
+ * get方法，对应get请求
+ * @param {String} url [请求的url地址]
+ * @param {Object} params [请求时携带的参数]
+ */
+export function get(url, params) {
+  console.log(url,'77777')
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        params: params,
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err.data);
+      });
+  });
+}
+/**
+ * post方法，对应post请求
+ * @param {String} url [请求的url地址]
+ * @param {Object} params [请求时携带的参数]
+ */
+
+export function  post({ url, data }) {
+  return new Promise((resolve, reject) => {
+    axios({
+      url, // 必填 请求API。
+      timeout: 10000,
+      method: "post",
+      data,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json;charset=UTF-8",
+        TwiAuth: token || "",
+        Authorization: token || "",
+        Twi_Client: "web",
+      },
+    }).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          reject(err);
+        });
+
+  });
+}
+
+// 默認請求方式
+export default {
+  post({ url, data }) {
+    return new Promise((resolve, reject) => {
+      axios({
+        url, // 必填 请求API。
+        timeout: 10000,
+        method: "post",
+        data,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "Content-Type": "application/json;charset=UTF-8",
+          TwiAuth: token || "",
+          Authorization: token || "",
+          Twi_Client: "web",
+        },
+      })
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  get({ url, data }) {
+    return new Promise((resolve, reject) => {
+      axios({
+        url, // 必填 请求API。
+        timeout: 10000,
+        method: "get",
+        data,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "Content-Type": "application/json;charset=UTF-8",
+          TwiAuth: token || "",
+          Authorization: token || "",
+          Twi_Client: "web",
+        },
+      })
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+};

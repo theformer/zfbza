@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="02279786-dece-4345-9612-c95227e1f603" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/auth-entication/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/auth-entication/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home-page/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home-page/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/my-house/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/my-house/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/register-detail/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/register-detail/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/visitor-info/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/visitor-info/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utlis/http.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utlis/http.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1sgsl8CZnYgscp0QYWKhUlVwUuk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../浙里办H5/code" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\workspace\小程序1\code\zfbza" />
+          <option name="myCopyRoot" value="D:\workspace\小程序1\code\zfbza" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\workspace\小程序1\code\zfbza" />
+          <option name="myCopyRoot" value="D:\workspace\小程序1\code\zfbza" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="02279786-dece-4345-9612-c95227e1f603" name="Default Changelist" comment="" />
+      <created>1621305716781</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1621305716781</updated>
+      <workItem from="1621305720325" duration="1496000" />
+      <workItem from="1621324900543" duration="49000" />
+      <workItem from="1621389504933" duration="1255000" />
+      <workItem from="1621404869707" duration="5540000" />
+      <workItem from="1621501305616" duration="21081000" />
+      <workItem from="1621587835285" duration="13000" />
+      <workItem from="1621818904933" duration="4427000" />
+      <workItem from="1621850642303" duration="4153000" />
+      <workItem from="1621904795974" duration="11200000" />
+      <workItem from="1621996326638" duration="533000" />
+      <workItem from="1622000360730" duration="341000" />
+      <workItem from="1622019029026" duration="150000" />
+      <workItem from="1622190912008" duration="25581000" />
+      <workItem from="1622277146867" duration="27219000" />
+      <workItem from="1622452324570" duration="101178000" />
+      <workItem from="1623029361885" duration="72566000" />
+      <workItem from="1623240587133" duration="65372000" />
+      <workItem from="1623828985386" duration="807000" />
+      <workItem from="1623835774205" duration="91759000" />
+      <workItem from="1624438816907" duration="10731000" />
+      <workItem from="1624501665261" duration="11208000" />
+      <workItem from="1624520158066" duration="2492000" />
+      <workItem from="1624522660405" duration="17194000" />
+      <workItem from="1624599839890" duration="51238000" />
+      <workItem from="1625016142888" duration="44582000" />
+      <workItem from="1625479394312" duration="102809000" />
+      <workItem from="1626401237932" duration="2630000" />
+      <workItem from="1626404410809" duration="95309000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
